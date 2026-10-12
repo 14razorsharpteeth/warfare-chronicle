@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warfare Chronicle | Tactical & Armament News</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        lora: ['Lora', 'serif'],
+                    },
+                    colors: {
+                        parchment: '#f4ecd8',
+                        'parchment-dark': '#e6dabb',
+                        crimson: '#8b0000',
+                        ink: '#2b2b2b',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: theme('colors.parchment');
+            color: theme('colors.ink');
+            /* Inline SVG Noise for a parchment texture without external image requests */
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
+        }
+        .nav-link {
+            position: relative;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: theme('colors.crimson');
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: theme('colors.crimson');
+        }
+        
+        .view-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .view-section.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .article-body p { margin-bottom: 1.5rem; line-height: 1.8; font-size: 1.125rem; }
+        .article-body h2 { font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid theme('colors.ink' / 20%); padding-bottom: 0.5rem; }
+        .article-body h3 { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
+        .article-body ul { list-style-type: square; margin-left: 2rem; margin-bottom: 1.5rem; }
+        .article-body li { margin-bottom: 0.5rem; }
+        .dropcap::first-letter {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            float: left;
+            line-height: 1;
+            padding-right: 0.5rem;
+            color: theme('colors.crimson');
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="font-lora antialiased overflow-y-scroll">
+
+    <header class="border-b-4 border-ink pb-4 pt-6 px-4 max-w-7xl mx-auto bg-parchment sticky top-0 z-50 shadow-sm">
+        <div class="text-center mb-4 cursor-pointer" onclick="filterCategory('all')">
+            <h1 class="font-cinzel text-4xl md:text-6xl font-bold text-ink tracking-tight mb-2 uppercase">
+                Warfare Chronicle
+            </h1>
+            <p class="font-cinzel text-sm md:text-lg font-semibold tracking-widest text-crimson uppercase">
+                The Definitive Archive of Military History
+            </p>
+        </div>
+
+        <nav id="main-nav" class="flex flex-wrap justify-center gap-4 md:gap-8 font-cinzel font-bold text-xs md:text-sm lg:text-base tracking-wider uppercase mt-4">
+            <span class="nav-link active" data-category="all" onclick="filterCategory('all')">Front Page</span>
+            <span class="nav-link" data-category="sparta" onclick="filterCategory('sparta')">Sparta</span>
+            <span class="nav-link" data-category="rome" onclick="filterCategory('rome')">Rome</span>
+            <span class="nav-link" data-category="vikings" onclick="filterCategory('vikings')">Vikings</span>
+            <span class="nav-link" data-category="medieval" onclick="filterCategory('medieval')">Medieval</span>
+            <span class="nav-link" data-category="napoleonic" onclick="filterCategory('napoleonic')">Napoleonic</span>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 min-h-screen">
+        
+        <!-- FEED VIEW -->
+        <div id="feed-view" class="view-section active">
+            <div id="article-grid" class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Articles will be injected here via JavaScript -->
+            </div>
+        </div>
+
+        <!-- ARTICLE VIEW -->
+        <div id="article-view" class="view-section max-w-4xl mx-auto">
+            <button onclick="showFeed()" class="mb-8 font-cinzel font-bold text-sm uppercase tracking-wider text-ink/70 hover:text-crimson transition-colors flex items-center group">
+                <i class="fa-solid fa-arrow-left mr-2 group-hover:-translate-x-1 transition-transform"></i> Return to Feed
+            </button>
+            
+            <div id="full-article-content" class="bg-parchment-dark/10 p-4 md:p-8 rounded-sm shadow-sm border border-ink/10">
+                <!-- Full article content injected here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Data URIs using pure inline SVG. No external network requests required.
+        const svgAssets = {
+            rome: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%238b0000'/><circle cx='400' cy='200' r='120' fill='%23ffd700'/><text x='400' y='230' font-size='90' text-anchor='middle' fill='%238b0000' font-family='serif' font-weight='bold'>SPQR</text></svg>",
+            sparta: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%232b1b17'/><circle cx='400' cy='200' r='140' fill='%23cd7f32'/><text x='400' y='250' font-size='150' text-anchor='middle' fill='%232b1b17' font-family='sans-serif' font-weight='bold'>Λ</text></svg>",
+            
+            // Updated Medieval SVG: Heater Shield only (sword removed)
+            medieval: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231a365d'/><path d='M300,50 h200 v120 c0,120 -100,220 -100,220 c0,0 -100,-100 -100,-220 z' fill='%23e2e8f0' stroke='%2394a3b8' stroke-width='12'/><rect x='385' y='50' width='30' height='225' fill='%23b91c1c'/><rect x='300' y='150' width='200' height='30' fill='%23b91c1c'/></svg>",
+            
+            // Updated Viking SVG: Highly detailed bearded battle axe with metallic shading, wood grain, and leather wrap
+            vikings: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><defs><linearGradient id='metal' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23e2e8f0'/><stop offset='50%' stop-color='%2394a3b8'/><stop offset='100%' stop-color='%23475569'/></linearGradient></defs><rect width='100%' height='100%' fill='%231e293b'/><rect x='380' y='40' width='40' height='340' fill='%235c4033' rx='8'/><path d='M390 40 v340 M400 40 v340 M410 40 v340' stroke='%233e2723' stroke-width='2' stroke-dasharray='15,10,25,5'/><path d='M380 220 l40 15 v15 l-40 -15 z M380 250 l40 15 v15 l-40 -15 z M380 280 l40 15 v15 l-40 -15 z M380 310 l40 15 v15 l-40 -15 z' fill='%238b4513' stroke='%234a2311' stroke-width='2'/><path d='M380,70 Q280,60 230,20 Q210,130 230,250 Q280,210 320,130 L380,120 Z' fill='url(%23metal)' stroke='%23334155' stroke-width='4'/><rect x='375' y='65' width='50' height='65' fill='url(%23metal)' stroke='%23334155' stroke-width='3' rx='5'/><circle cx='400' cy='80' r='6' fill='%231e293b'/><circle cx='400' cy='110' r='6' fill='%231e293b'/><path d='M 330 110 L 350 110 L 340 90 Z M 310 120 L 320 130 L 310 140' stroke='%2364748b' stroke-width='3' fill='none'/></svg>",
+            
+            // New Napoleonic SVG: Classic Field Cannon
+            napoleonic: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231e3a8a'/><path d='M200,180 Q400,180 550,190 L550,210 Q400,220 200,220 Z' fill='%23ca8a04'/><rect x='180' y='170' width='40' height='60' fill='%23ca8a04' rx='10'/><path d='M300,220 L600,300 L580,320 L280,240 Z' fill='%23854d0e'/><circle cx='350' cy='240' r='70' fill='none' stroke='%23451a03' stroke-width='15'/><circle cx='350' cy='240' r='60' fill='none' stroke='%2378350f' stroke-width='15'/><line x1='280' y1='240' x2='420' y2='240' stroke='%23451a03' stroke-width='8'/><line x1='350' y1='170' x2='350' y2='310' stroke='%23451a03' stroke-width='8'/><line x1='300' y1='190' x2='400' y2='290' stroke='%23451a03' stroke-width='8'/><line x1='300' y1='290' x2='400' y2='190' stroke='%23451a03' stroke-width='8'/><circle cx='350' cy='240' r='15' fill='%23facc15'/></svg>"
+        };
+
+        const articles = [
+            {
+                id: 'rome-omnibus',
+                category: 'rome',
+                title: 'The Roman War Machine: Conquest by Iron, Shield, and Beast',
+                author: 'Legate Valerius',
+                thumbnail: svgAssets.rome,
+                heroImage: svgAssets.rome,
+                summary: 'A comprehensive analysis of Roman military supremacy, detailing the Scutum shield tactics, the Gladius, and the terrifying deployment of War Hounds and anti-Elephant tactics.',
+                fullText: `
+                    <p class="dropcap">Rome did not conquer the known world through mere numbers; it conquered through supreme discipline, advanced armament, and a brutal willingness to adapt to any threat. The legions represent a perfect synthesis of defensive formations, offensive lethality, and the strategic use of animals on the battlefield.</p>
+
+                    <h2>1. Defensive Tactics: The Scutum and the Testudo</h2>
+                    <p>The foundation of Roman infantry survival is the <strong>Scutum</strong>. This large, semi-cylindrical shield is constructed from strips of wood glued together and covered in canvas and leather, edged with bronze or iron. Its curved shape is designed to deflect incoming blows and missiles around the soldier, rather than absorbing the full kinetic impact.</p>
+                    <p>When subjected to heavy missile fire, disciplined legionaries form the <strong>Testudo (Tortoise) formation</strong>. Men in the front rank interlock their shields facing forward, while those behind them hold their shields flat over their heads. The men on the flanks face outwards. This creates an impenetrable armored shell, allowing the unit to march safely up to fortress walls or through barrages of Parthian arrows.</p>
+
+                    <h2>2. Offensive Lethality: Pilum and Gladius</h2>
+                    <p>The Roman offensive sequence is a masterclass in shock warfare. As the enemy approaches, the legion unleashes the <strong>Pilum</strong>. This heavy javelin features a long, soft-iron shank behind a hardened point. When it strikes an enemy's shield, it pierces the wood. The heavy shaft then bends upon impact, preventing the enemy from throwing it back and rendering their shield unwieldy and useless, forcing them to discard it.</p>
+                    <p>Once the enemy formation is disrupted, the Romans draw the <strong>Gladius Hispaniensis</strong>. This short, two-foot sword is primarily a thrusting weapon. In the tight crush of the battle line, a legionary remains behind his scutum, stepping forward and thrusting the gladius upward into the exposed abdomen or throat of the enemy. It is a brutally efficient, close-quarters meat-grinder.</p>
+
+                    <h2>3. Beasts of War: Hounds, Horses, and Elephants</h2>
+                    <p>While infantry was paramount, Rome heavily utilized and countered animals in warfare.</p>
+                    <ul>
+                        <li><strong>War Hounds (Canis Pugnax):</strong> Rome deployed massive, mastiff-type war dogs wearing spiked collars and sometimes even scaled armor. These hounds were used as shock troops to break enemy skirmish lines, cause panic, and rip riders from their horses. They were terrifyingly effective against unarmored adversaries in the dense forests of Germania.</li>
+                        <li><strong>Equine Cavalry:</strong> The Romans relied heavily on auxiliary cavalry (horses) to protect their flanks and run down fleeing enemies. The horse provided the mobility required to project power across vast battlefields.</li>
+                        <li><strong>Elephants and War Pigs:</strong> While Rome faced the terrifying charge of Carthaginian war elephants (used to shatter infantry lines and trample troops), they quickly developed counter-tactics. They opened lanes in their formations to let the beasts pass, or famously deployed <strong>Incendiary War Pigs</strong>. The squealing of burning pigs terrified the elephants, causing them to stampede back into their own lines.</li>
+                    </ul>
+
+                    <h2>4. Naval Supremacy: The Quinquereme and Corvus</h2>
+                    <p>Initially a land power, Rome faced the maritime dominance of Carthage. They rapidly engineered massive fleets of galleys, most notably the <strong>Quinquereme</strong> (featuring five banks of oarsmen). </p>
+                    <p>Knowing their sailors could not out-maneuver the Carthaginians, Rome invented the <strong>Corvus (Raven)</strong>. This was a massive boarding bridge with a heavy iron spike on the bottom. When dropped onto an enemy deck, it locked the two ships together, allowing heavily armed legionaries to pour across and turn a naval skirmish into a brutal infantry battle at sea. This innovation won Rome the First Punic War.</p>
+                `
+            },
+            {
+                id: 'sparta-omnibus',
+                category: 'sparta',
+                title: 'Lacedaemonian Might: The Unbreakable Bronze Wall',
+                author: 'Ephor Cleomenes',
+                thumbnail: svgAssets.sparta,
+                heroImage: svgAssets.sparta,
+                summary: 'The Spartan military apparatus dissected: from the crushing pressure of the Phalanx, to the Dory spear, Molossian war hounds, and the bronze-rammed Triremes.',
+                fullText: `
+                    <p class="dropcap">To be Spartan is to be born for war. Surrounded by hostile states and a massive enslaved helot population, Lacedaemon survives only through martial perfection. Their approach to combat relies on heavy bronze, unbreakable psychological discipline, and the sheer physical trauma they inflict upon their foes.</p>
+
+                    <h2>1. The Shield: The Aspis and the Phalanx</h2>
+                    <p>The core of Greek warfare is the <strong>Aspis</strong> (often called a hoplon). Weighing upwards of 15 pounds, this deeply dished wooden shield, faced with a thin layer of bronze, is gripped firmly on the left forearm. It covers the hoplite from chin to knee.</p>
+                    <p>The Aspis dictates the tactical formation: the <strong>Phalanx</strong>. Men stand shoulder-to-shoulder, eight deep. A hoplite's shield protects his own left side and the right side of the man to his left. The battle begins with the <em>Othismos</em> (the shove)—the terrifying physical collision where the rear ranks push the front ranks into the enemy, crushing them under the sheer weight of bronze and muscle until the enemy line splinters.</p>
+
+                    <h2>2. Offensive Arms: Dory and Xiphos</h2>
+                    <p>From behind the shield wall, the Spartan thrusts with the <strong>Dory</strong>, an 8-foot spear. Gripped overhand, it is used to strike at the unprotected neck and eyes of the enemy over the rim of the shields. If the spearhead snaps, the weapon is reversed to utilize the <em>sauroter</em>, a bronze spike at the base, used for finishing off fallen enemies.</p>
+                    <p>If the formation breaks down into chaotic melee, the Spartan draws his <strong>Xiphos</strong>. The Spartan variant was notoriously short—barely more than a large dagger—designed for lethal, close-quarters stabbing where longer swords would be caught on shields or limbs.</p>
+
+                    <h2>3. Beasts of the Peloponnese: Molossian Hounds</h2>
+                    <p>While the Phalanx was composed solely of men, the Spartans were well-versed in the martial use of animals.</p>
+                    <ul>
+                        <li><strong>War Hounds (Molossians):</strong> Sparta utilized massive mastiff-like hounds imported from Epirus. These dogs were armored and unleashed before the main infantry clash to disrupt enemy skirmishers, spread terror, and break up loose formations. A 150-pound hound leaping at a man's throat requires immediate attention, creating openings for the Spartan advance.</li>
+                        <li><strong>Horses:</strong> Due to the mountainous terrain of Greece, heavy cavalry was rare. However, Spartans used horses for rapid communication, scouting, and running down routed enemies, ensuring a defeated army could not reform.</li>
+                        <li><strong>Elephants:</strong> While absent in classical Sparta, Spartan mercenaries later faced them in the Hellenistic period, learning to target the mahout (driver) or the beast's vulnerable joints with missile fire.</li>
+                    </ul>
+
+                    <h2>4. Naval Power: The Bronze-Beaked Trireme</h2>
+                    <p>Though famous for their infantry, Sparta commanded formidable fleets during the Peloponnesian War. The vessel of choice was the <strong>Trireme</strong>, a sleek galley powered by three banks of oars (170 rowers).</p>
+                    <p>The Trireme was not a transport; it was a guided missile. The primary tactic was to row at ramming speed, using the heavy bronze beak at the waterline to smash into the wooden flank of an enemy ship, shattering its oars and opening a catastrophic hole in the hull. Boarding actions by Spartan marines followed if the ship did not immediately sink.</p>
+                `
+            },
+            {
+                id: 'medieval-omnibus',
+                category: 'medieval',
+                title: 'Chivalry and Carnage: The Apex of Medieval Warfare',
+                author: 'Sir Geoffrey de Charny',
+                thumbnail: svgAssets.medieval,
+                heroImage: svgAssets.medieval,
+                summary: 'Exploring the devastating shock tactics of the Medieval era, featuring heavy cavalry on Destrier warhorses, the evolution of the shield, and massive war fleets.',
+                fullText: `
+                    <p class="dropcap">The battlefields of Medieval Europe were domains of extreme violence, governed by a deadly arms race between armorsmiths and weapon-makers. At the center of this maelstrom was the armored knight, backed by levied infantry, terrifying beasts of war, and fleets that transported crusades across the sea.</p>
+
+                    <h2>1. Shield Evolution: From Kite to Heater</h2>
+                    <p>In the early medieval period (e.g., Hastings in 1066), the <strong>Kite Shield</strong> was dominant. Its elongated teardrop shape was specifically designed to protect the leading leg of a mounted knight, while also allowing infantry to form overlapping shield walls. </p>
+                    <p>As plate armor advanced, covering the legs entirely with steel, massive shields became redundant and cumbersome. They evolved into the smaller <strong>Heater Shield</strong> (resembling an iron heater). This smaller shield was highly maneuverable, used actively to parry heavy sword blows and lance strikes, while proudly displaying the knight's heraldry.</p>
+
+                    <h2>2. Weapons of Armor-Defeat: Lance and Longsword</h2>
+                    <p>The defining weapon of the era is the couched <strong>Lance</strong>. Tucked tightly under the knight's arm, the lance transfers the entire momentum of a galloping 1,500-pound warhorse into a steel point barely an inch across, capable of shattering shield walls and throwing men yards backward.</p>
+                    <p>In dismounted combat, the <strong>Longsword</strong> reigned supreme. Wielded with two hands, it provided immense leverage. Against heavily armored foes, knights employed 'half-swording'—gripping the blade with armored gloves to drive the point with extreme precision into the weak points of an enemy's visor or armpit, acting more like a short spear than a cutting tool.</p>
+
+                    <h2>3. The Animal Kingdom at War</h2>
+                    <p>Medieval warfare relied entirely on muscle power, both human and animal.</p>
+                    <ul>
+                        <li><strong>The Destrier (Warhorse):</strong> The true weapon of the knight was his horse. Bred for aggression and size, the Destrier was a weapon of psychological and physical shock. A massed cavalry charge was designed to literally trample infantry into the mud. They were trained to bite, kick, and rear on command.</li>
+                        <li><strong>War Hounds (Mastiffs and Alaunts):</strong> Enormous war dogs were frequently deployed in medieval armies. Wearing spiked collars and sometimes boiled leather armor, they were released to hunt down fleeing enemies, drag knights off their horses, and guard encampments against nocturnal raids.</li>
+                        <li><strong>Pigs and Incendiaries:</strong> In siege warfare, pigs were famously used (as at Rochester Castle in 1215) where their fat was used to fuel massive fires under the wooden props of mined castle walls, causing the towers to collapse.</li>
+                    </ul>
+
+                    <h2>4. Naval Warfare: Cogs and Galleys</h2>
+                    <p>Medieval navies moved vast armies. The primary northern ship was the <strong>Cog</strong>. With high sides and massive fore and aft 'castles', the Cog was essentially a floating fortress. Naval battles mirrored land battles: ships would grapple together, and archers would fire down from the high castles before men-at-arms boarded for bloody hand-to-hand combat.</p>
+                `
+            },
+            {
+                id: 'vikings-omnibus',
+                category: 'vikings',
+                title: 'Fury of the Northmen: Sea, Shield, and Axe',
+                author: 'Jarl Hastein',
+                thumbnail: svgAssets.vikings,
+                heroImage: svgAssets.vikings,
+                summary: 'The terror of the Norsemen: Masterful longship engineering, the impenetrable Skjaldborg (shield wall), massive Dane axes, and the use of massive wolfhounds in combat.',
+                fullText: `
+                    <p class="dropcap">From the icy fjords of Scandinavia, the Vikings exploded onto the world stage, forever altering the geopolitical landscape of Europe. Their success was not born of mindless savagery, but of masterful naval engineering, brutal infantry tactics, and a warrior ethos that embraced death on the battlefield.</p>
+
+                    <h2>1. The Skjaldborg: The Viking Shield Wall</h2>
+                    <p>The Norse warrior's primary defense was the round wooden shield, typically constructed of linden wood. It featured a central iron boss that protected the hand. This shield was not strapped to the arm; it was gripped by a single central handle, allowing the warrior to punch forward with the boss to bash an enemy's face or weapon.</p>
+                    <p>In pitched battle, Vikings formed the <strong>Skjaldborg (Shield Wall)</strong>. Warriors stood shoulder-to-shoulder, their round shields overlapping by up to a third. This created a solid timber barricade against arrows and cavalry. It was an offensive formation as much as defensive; the wall would slowly march forward, seeking to outflank or crush the opposing line through sheer weight and pressure.</p>
+
+                    <h2>2. The Tools of Slaughter: Dane Axe and Ulfberht</h2>
+                    <p>While spears were common, the Viking is legendary for two specific weapons.</p>
+                    <p>The two-handed <strong>Dane Axe</strong> possessed a broad, razor-sharp iron blade. Wielded by the tallest and strongest warriors, it was designed to cleave through mail armor and shatter shields. A clean strike could easily decapitate a horse or split a man to the sternum.</p>
+                    <p>For the elite, there was the <strong>Ulfberht Sword</strong>. Forged from high-crucible steel imported from the Middle East, these swords were impossibly strong, flexible, and sharp compared to the brittle iron weapons of their European victims. They were prestige weapons, symbols of immense wealth and lethal capability.</p>
+
+                    <h2>3. Beasts of the North: Elkhounds and Ponies</h2>
+                    <p>Animals played a crucial, if unconventional, role in Viking expeditions.</p>
+                    <ul>
+                        <li><strong>War Dogs (Irish Wolfhounds & Elkhounds):</strong> Vikings highly prized massive hounds. During raids in Ireland and Britain, they captured and utilized giant wolfhounds. In battle, these massive dogs were loosed into the enemy ranks to cause chaos, tear at limbs, and create gaps in enemy shield walls that the axemen could exploit.</li>
+                        <li><strong>Viking Horses:</strong> While they rarely fought on horseback like medieval knights, the Vikings were masters of stealing local horses upon landing. This granted them immense strategic mobility, allowing a raiding party to strike monasteries 30 miles inland and return to their ships before a local army could respond.</li>
+                    </ul>
+
+                    <h2>4. The Drakkar: The Dragon Ship</h2>
+                    <p>The key to Viking dominance was the <strong>Longship (Drakkar)</strong>. Built with a 'clinker' construction (overlapping oak planks), the ship was incredibly flexible, riding over ocean swells rather than breaking against them.</p>
+                    <p>Its most terrifying feature was its shallow draft. A ship carrying 60 heavily armed men drew only three feet of water. This allowed Vikings to cross the brutal North Sea, and then sail directly up shallow rivers like the Seine or Thames, striking deep into the heart of undefended territory and beaching the ships directly on the sand for an immediate amphibious assault.</p>
+                `
+            },
+            {
+                id: 'napoleonic-omnibus',
+                category: 'napoleonic',
+                title: 'The Grand Battery: Gunpowder, Steel, and Sail',
+                author: 'Marshal Ney',
+                thumbnail: svgAssets.napoleonic,
+                heroImage: svgAssets.napoleonic,
+                summary: 'The industrial slaughter of the 19th Century: Massed musket fire, the heavy cavalry charge, the obsolescence of shields, and the floating fortresses of the line.',
+                fullText: `
+                    <p class="dropcap">The Napoleonic era witnessed warfare on a scale never before seen. The armies of Europe clashed in massive columns, choked by the thick white smoke of black powder. The age of individual heroism was eclipsed by mathematics, logistics, and the devastating science of artillery.</p>
+
+                    <h2>1. The End of the Shield: Earthworks and Bayonets</h2>
+                    <p>By the 1800s, the traditional shield was completely obsolete. A one-ounce lead ball fired from a musket could punch through steel plate, rendering personal armor useless (save for heavy cavalry breastplates). </p>
+                    <p>Instead of shields, armies relied on <strong>Earthworks and Sappers</strong>. Combat engineers dug massive trench systems and built gabions (wicker baskets filled with earth) to absorb cannon fire. On the open field, infantry protected themselves from cavalry charges by forming <strong>Infantry Squares</strong>—a tight, four-sided formation with a bristling hedge of bayonets that horses simply refused to charge into.</p>
+
+                    <h2>2. The Holy Trinity: Musket, Bayonet, Artillery</h2>
+                    <p>The standard infantry weapon was the smoothbore flintlock <strong>Musket</strong>. It was highly inaccurate beyond 75 yards. Therefore, tactics required men to stand shoulder-to-shoulder and fire in massive volleys to ensure a wall of lead hit the enemy lines.</p>
+                    <p>Once the enemy was softened, the devastating <strong>Bayonet charge</strong> followed. The psychological terror of thousands of men screaming and charging with 17-inch triangular blades often broke enemy lines before physical contact was even made.</p>
+                    <p>However, the true god of the battlefield was Artillery. Firing solid iron round shot, a single cannonball could bounce through an infantry column, severing limbs and killing dozens of men in a single strike.</p>
+
+                    <h2>3. The Final Glory of the Beast</h2>
+                    <p>Animals suffered horrific casualties in the gunpowder era, yet remained utterly indispensable.</p>
+                    <ul>
+                        <li><strong>The Heavy Cavalry (Cuirassiers):</strong> Mounted on massive warhorses, armored in steel breastplates, these men were the shock troops of the Emperor. Their purpose was to exploit weaknesses in the enemy line, charging at a full gallop to shatter infantry formations through sheer momentum and flashing sabers.</li>
+                        <li><strong>Artillery Draught Horses:</strong> An army cannot move without its guns. Thousands of horses were required to drag cannons through the mud of Europe. If the horses died, the artillery was lost, and the battle was forfeited.</li>
+                        <li><strong>War Dogs (Regimental Mascots & Guards):</strong> While no longer used as direct shock troops against musket fire, dogs served vital roles. Regiments kept massive hounds to guard supply wagons from partisans, and famously used specialized dogs to locate wounded soldiers on the battlefield at night amidst the piles of corpses.</li>
+                        <li><strong>Elephants (In India):</strong> While Napoleon fought in Europe, British and French colonial forces in India faced and utilized war elephants for heavy logistical transport and occasionally to terrify local unseasoned troops, though artillery made them highly vulnerable targets.</li>
+                    </ul>
+
+                    <h2>4. Floating Fortresses: The Ship of the Line</h2>
+                    <p>At sea, combat was apocalyptic. The primary vessel was the <strong>Ship of the Line</strong>, carrying anywhere from 74 to 120 heavy cannons. </p>
+                    <p>These majestic wooden behemoths fought by sailing in parallel lines and unleashing <em>broadsides</em>—firing dozens of cannons simultaneously. They fired solid shot to smash hulls, chain-shot to tear down masts and sails, and grapeshot (bags of small iron balls) to clear enemy decks of human life in a storm of shrapnel before a boarding party was sent across with cutlasses and pistols.</p>
+                `
+            }
+        ];
+
+        const feedView = document.getElementById('feed-view');
+        const articleView = document.getElementById('article-view');
+        const articleGrid = document.getElementById('article-grid');
+        const fullArticleContent = document.getElementById('full-article-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function filterCategory(category) {
+            navLinks.forEach(link => {
+                if (link.dataset.category === category) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            let filteredArticles = articles;
+            if (category !== 'all') {
+                filteredArticles = articles.filter(a => a.category === category);
+            }
+
+            renderGrid(filteredArticles);
+            showFeed();
+        }
+
+        function renderGrid(articleList) {
+            articleGrid.innerHTML = '';
+            
+            articleList.forEach(article => {
+                const card = document.createElement('article');
+                card.className = "flex flex-col border border-ink/20 bg-parchment-dark/40 p-6 rounded-sm shadow-sm group cursor-pointer transition-all hover:shadow-lg hover:bg-parchment-dark/60 transform hover:-translate-y-1";
+                card.onclick = () => openArticle(article.id);
+                
+                card.innerHTML = `
+                    <div class="overflow-hidden mb-6 rounded-sm h-64 relative border border-ink/10">
+                        <span class="absolute top-3 left-3 bg-ink text-parchment font-cinzel text-xs font-bold px-3 py-1 z-10 uppercase tracking-widest shadow-md">${article.category}</span>
+                        <img src="${article.thumbnail}" alt="${article.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <h3 class="font-cinzel text-2xl md:text-3xl font-bold mb-4 group-hover:text-crimson transition-colors leading-snug">
+                        ${article.title}
+                    </h3>
+                    <p class="text-ink/80 text-base mb-6 flex-grow leading-relaxed">
+                        ${article.summary}
+                    </p>
+                    <div class="mt-auto border-t-2 border-ink/10 pt-4 flex justify-between items-center text-sm font-cinzel font-bold text-ink/70 uppercase tracking-widest">
+                        <span><i class="fa-solid fa-feather-pointed mr-2"></i> ${article.author}</span>
+                        <span class="text-crimson group-hover:text-ink transition-colors">Read Archive <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                    </div>
+                `;
+                articleGrid.appendChild(card);
+            });
+        }
+
+        function openArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+
+            fullArticleContent.innerHTML = `
+                <div class="mb-6 border-b border-ink/20 pb-4">
+                    <span class="bg-crimson text-parchment px-3 py-1 text-xs font-bold font-cinzel uppercase tracking-widest shadow-sm">${article.category}</span>
+                </div>
+                
+                <h1 class="font-cinzel text-4xl md:text-5xl lg:text-6xl font-bold mb-8 text-ink leading-tight">
+                    ${article.title}
+                </h1>
+                
+                <div class="flex items-center gap-3 mb-10 text-ink/80 font-cinzel font-semibold tracking-wider text-sm border-b-2 border-ink/10 pb-6">
+                    <div>
+                        <div class="uppercase">Archived Dispatch by <span class="text-crimson font-bold">${article.author}</span></div>
+                    </div>
+                </div>
+
+                <div class="w-full h-64 md:h-[500px] overflow-hidden rounded-sm mb-12 shadow-xl border border-ink/20 relative bg-ink">
+                    <img src="${article.heroImage}" class="w-full h-full object-cover opacity-90" alt="Hero Image">
+                </div>
+
+                <div class="article-body font-lora max-w-none text-ink text-lg leading-relaxed md:px-8">
+                    ${article.fullText}
+                </div>
+                
+                <div class="mt-16 pt-8 border-t border-ink/20 flex justify-center">
+                    <button onclick="showFeed()" class="bg-ink text-parchment px-8 py-4 font-cinzel font-bold hover:bg-crimson transition-colors uppercase tracking-widest shadow-lg transform hover:-translate-y-1">
+                        <i class="fa-solid fa-book-open mr-2"></i> Return to Front Page
+                    </button>
+                </div>
+            `;
+
+            feedView.classList.remove('active');
+            setTimeout(() => {
+                feedView.style.display = 'none';
+                articleView.style.display = 'block';
+                void articleView.offsetWidth; 
+                articleView.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300);
+        }
+
+        function showFeed() {
+            articleView.classList.remove('active');
+            setTimeout(() => {
+                articleView.style.display = 'none';
+                feedView.style.display = 'block';
+                void feedView.offsetWidth;
+                feedView.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300);
+        }
+
+        // Initialize App on load
+        document.addEventListener('DOMContentLoaded', () => {
+            filterCategory('all');
+        });
+
+    </script>
+</body>
+</html>
