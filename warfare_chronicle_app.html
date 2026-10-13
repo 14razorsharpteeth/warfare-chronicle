@@ -24,6 +24,21 @@
                         'parchment-dark': '#e6dabb',
                         crimson: '#8b0000',
                         ink: '#2b2b2b',
+                        'egypt-gold': '#d4af37',
+                        'japan-sun': '#b91c1c',
+                        'persian-blue': '#1e3a8a',
+                        'mongol-steppe': '#4d7c0f',
+                        'aztec-jade': '#0d9488',
+                        'macedonia-gold': '#b8860b',
+                        'carthage-purple': '#4a0e4e',
+                        'han-red': '#990000',
+                        'assyria-blue': '#1c39bb',
+                        'byzantine-purple': '#702963',
+                        'ottoman-green': '#006633',
+                        'mughal-orange': '#cc5500',
+                        'inca-sun': '#ffcc00',
+                        'zulu-hide': '#8b5a2b',
+                        'celtic-green': '#228b22'
                     }
                 }
             }
@@ -34,7 +49,7 @@
         body {
             background-color: theme('colors.parchment');
             color: theme('colors.ink');
-            /* Inline SVG Noise for a parchment texture without external image requests */
+            /* Inline SVG Noise for a parchment texture */
             background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.05"/></svg>');
         }
         .nav-link {
@@ -87,7 +102,7 @@
 </head>
 <body class="font-lora antialiased overflow-y-scroll">
 
-    <header class="border-b-4 border-ink pb-4 pt-6 px-4 max-w-7xl mx-auto bg-parchment sticky top-0 z-50 shadow-sm">
+    <header id="main-header" class="border-b-4 border-ink pb-4 pt-6 px-4 max-w-7xl mx-auto bg-parchment sticky top-0 z-50 shadow-sm transition-transform duration-300 ease-in-out">
         <div class="text-center mb-4 cursor-pointer" onclick="filterCategory('all')">
             <h1 class="font-cinzel text-4xl md:text-6xl font-bold text-ink tracking-tight mb-2 uppercase">
                 Warfare Chronicle
@@ -97,13 +112,28 @@
             </p>
         </div>
 
-        <nav id="main-nav" class="flex flex-wrap justify-center gap-4 md:gap-8 font-cinzel font-bold text-xs md:text-sm lg:text-base tracking-wider uppercase mt-4">
+        <nav id="main-nav" class="flex flex-wrap justify-center gap-4 md:gap-6 font-cinzel font-bold text-xs md:text-sm lg:text-base tracking-wider uppercase mt-4">
             <span class="nav-link active" data-category="all" onclick="filterCategory('all')">Front Page</span>
+            <span class="nav-link" data-category="egypt" onclick="filterCategory('egypt')">Egypt</span>
+            <span class="nav-link" data-category="persia" onclick="filterCategory('persia')">Persia</span>
             <span class="nav-link" data-category="sparta" onclick="filterCategory('sparta')">Sparta</span>
             <span class="nav-link" data-category="rome" onclick="filterCategory('rome')">Rome</span>
             <span class="nav-link" data-category="vikings" onclick="filterCategory('vikings')">Vikings</span>
             <span class="nav-link" data-category="medieval" onclick="filterCategory('medieval')">Medieval</span>
+            <span class="nav-link" data-category="mongol" onclick="filterCategory('mongol')">Mongol</span>
+            <span class="nav-link" data-category="japan" onclick="filterCategory('japan')">Japan</span>
+            <span class="nav-link" data-category="aztec" onclick="filterCategory('aztec')">Aztec</span>
             <span class="nav-link" data-category="napoleonic" onclick="filterCategory('napoleonic')">Napoleonic</span>
+            <span class="nav-link" data-category="macedonia" onclick="filterCategory('macedonia')">Macedonia</span>
+            <span class="nav-link" data-category="carthage" onclick="filterCategory('carthage')">Carthage</span>
+            <span class="nav-link" data-category="han" onclick="filterCategory('han')">Han China</span>
+            <span class="nav-link" data-category="assyria" onclick="filterCategory('assyria')">Assyria</span>
+            <span class="nav-link" data-category="byzantine" onclick="filterCategory('byzantine')">Byzantine</span>
+            <span class="nav-link" data-category="ottoman" onclick="filterCategory('ottoman')">Ottoman</span>
+            <span class="nav-link" data-category="mughal" onclick="filterCategory('mughal')">Mughal</span>
+            <span class="nav-link" data-category="inca" onclick="filterCategory('inca')">Inca</span>
+            <span class="nav-link" data-category="zulu" onclick="filterCategory('zulu')">Zulu</span>
+            <span class="nav-link" data-category="celtic" onclick="filterCategory('celtic')">Celtic</span>
         </nav>
     </header>
 
@@ -129,52 +159,114 @@
     </main>
 
     <script>
-        // Data URIs using pure inline SVG. No external network requests required.
+        // Data URIs using pure inline SVG.
         const svgAssets = {
             rome: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%238b0000'/><circle cx='400' cy='200' r='120' fill='%23ffd700'/><text x='400' y='230' font-size='90' text-anchor='middle' fill='%238b0000' font-family='serif' font-weight='bold'>SPQR</text></svg>",
             sparta: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%232b1b17'/><circle cx='400' cy='200' r='140' fill='%23cd7f32'/><text x='400' y='250' font-size='150' text-anchor='middle' fill='%232b1b17' font-family='sans-serif' font-weight='bold'>Λ</text></svg>",
-            
-            // Updated Medieval SVG: Heater Shield only (sword removed)
             medieval: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231a365d'/><path d='M300,50 h200 v120 c0,120 -100,220 -100,220 c0,0 -100,-100 -100,-220 z' fill='%23e2e8f0' stroke='%2394a3b8' stroke-width='12'/><rect x='385' y='50' width='30' height='225' fill='%23b91c1c'/><rect x='300' y='150' width='200' height='30' fill='%23b91c1c'/></svg>",
-            
-            // Updated Viking SVG: Highly detailed bearded battle axe with metallic shading, wood grain, and leather wrap
             vikings: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><defs><linearGradient id='metal' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23e2e8f0'/><stop offset='50%' stop-color='%2394a3b8'/><stop offset='100%' stop-color='%23475569'/></linearGradient></defs><rect width='100%' height='100%' fill='%231e293b'/><rect x='380' y='40' width='40' height='340' fill='%235c4033' rx='8'/><path d='M390 40 v340 M400 40 v340 M410 40 v340' stroke='%233e2723' stroke-width='2' stroke-dasharray='15,10,25,5'/><path d='M380 220 l40 15 v15 l-40 -15 z M380 250 l40 15 v15 l-40 -15 z M380 280 l40 15 v15 l-40 -15 z M380 310 l40 15 v15 l-40 -15 z' fill='%238b4513' stroke='%234a2311' stroke-width='2'/><path d='M380,70 Q280,60 230,20 Q210,130 230,250 Q280,210 320,130 L380,120 Z' fill='url(%23metal)' stroke='%23334155' stroke-width='4'/><rect x='375' y='65' width='50' height='65' fill='url(%23metal)' stroke='%23334155' stroke-width='3' rx='5'/><circle cx='400' cy='80' r='6' fill='%231e293b'/><circle cx='400' cy='110' r='6' fill='%231e293b'/><path d='M 330 110 L 350 110 L 340 90 Z M 310 120 L 320 130 L 310 140' stroke='%2364748b' stroke-width='3' fill='none'/></svg>",
-            
-            // New Napoleonic SVG: Classic Field Cannon
-            napoleonic: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231e3a8a'/><path d='M200,180 Q400,180 550,190 L550,210 Q400,220 200,220 Z' fill='%23ca8a04'/><rect x='180' y='170' width='40' height='60' fill='%23ca8a04' rx='10'/><path d='M300,220 L600,300 L580,320 L280,240 Z' fill='%23854d0e'/><circle cx='350' cy='240' r='70' fill='none' stroke='%23451a03' stroke-width='15'/><circle cx='350' cy='240' r='60' fill='none' stroke='%2378350f' stroke-width='15'/><line x1='280' y1='240' x2='420' y2='240' stroke='%23451a03' stroke-width='8'/><line x1='350' y1='170' x2='350' y2='310' stroke='%23451a03' stroke-width='8'/><line x1='300' y1='190' x2='400' y2='290' stroke='%23451a03' stroke-width='8'/><line x1='300' y1='290' x2='400' y2='190' stroke='%23451a03' stroke-width='8'/><circle cx='350' cy='240' r='15' fill='%23facc15'/></svg>"
+            napoleonic: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231e3a8a'/><path d='M200,180 Q400,180 550,190 L550,210 Q400,220 200,220 Z' fill='%23ca8a04'/><rect x='180' y='170' width='40' height='60' fill='%23ca8a04' rx='10'/><path d='M300,220 L600,300 L580,320 L280,240 Z' fill='%23854d0e'/><circle cx='350' cy='240' r='70' fill='none' stroke='%23451a03' stroke-width='15'/><circle cx='350' cy='240' r='60' fill='none' stroke='%2378350f' stroke-width='15'/><line x1='280' y1='240' x2='420' y2='240' stroke='%23451a03' stroke-width='8'/><line x1='350' y1='170' x2='350' y2='310' stroke='%23451a03' stroke-width='8'/><line x1='300' y1='190' x2='400' y2='290' stroke='%23451a03' stroke-width='8'/><line x1='300' y1='290' x2='400' y2='190' stroke='%23451a03' stroke-width='8'/><circle cx='350' cy='240' r='15' fill='%23facc15'/></svg>",
+            japan: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%230f172a'/><circle cx='400' cy='200' r='130' fill='%23b91c1c'/><path d='M250,300 Q400,350 600,120 Q560,150 350,330 Z' fill='%23e2e8f0' stroke='%2394a3b8' stroke-width='2'/><path d='M250,300 L120,380' stroke='%23475569' stroke-width='15'/><path d='M260,290 L130,370' stroke='%231e293b' stroke-width='15' stroke-dasharray='10,5'/><rect x='230' y='285' width='20' height='40' fill='%23d4af37' transform='rotate(-30 240 305)' rx='5'/></svg>",
+            egypt: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%23c2b280'/><path d='M200,350 L400,100 L600,350 Z' fill='%23d4af37' stroke='%23b48f27' stroke-width='2'/><path d='M300,220 Q400,180 500,220 Q400,250 300,220 Z' fill='%230f172a'/><circle cx='400' cy='220' r='15' fill='%23c2b280'/><path d='M320,220 Q300,260 280,300' fill='none' stroke='%230f172a' stroke-width='10'/><path d='M380,240 Q400,320 450,280' fill='none' stroke='%230f172a' stroke-width='10'/><path d='M300,180 Q400,130 500,180' fill='none' stroke='%230f172a' stroke-width='8'/><path d='M500,220 L550,220' stroke='%230f172a' stroke-width='10'/></svg>",
+            persia: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231e3a8a'/><rect x='300' y='100' width='200' height='250' fill='%23d97706' rx='20'/><path d='M300,150 L500,150 M300,200 L500,200 M300,250 L500,250 M300,300 L500,300' stroke='%2392400e' stroke-width='10'/><path d='M400,50 L400,380' stroke='%23e5e7eb' stroke-width='15'/><polygon points='400,20 380,60 420,60' fill='%23e5e7eb'/></svg>",
+            mongol: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%234d7c0f'/><path d='M250,50 C150,150 150,250 250,350 C300,300 350,250 400,200 C350,150 300,100 250,50' fill='none' stroke='%2378350f' stroke-width='25' stroke-linecap='round'/><path d='M250,50 L250,350' stroke='%23e5e7eb' stroke-width='4' stroke-dasharray='10,5'/><path d='M150,200 L650,200' stroke='%23111827' stroke-width='8'/><polygon points='650,200 600,180 600,220' fill='%2364748b'/><polygon points='150,200 200,180 200,220' fill='%23991b1b'/></svg>",
+            aztec: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%230d9488'/><circle cx='400' cy='200' r='140' fill='%23fef08a' stroke='%23111827' stroke-width='10'/><circle cx='400' cy='200' r='100' fill='%23b91c1c'/><circle cx='400' cy='200' r='60' fill='%230ea5e9'/><rect x='380' y='20' width='40' height='360' fill='%2378350f'/><rect x='360' y='50' width='20' height='40' fill='%23111827'/><rect x='420' y='50' width='20' height='40' fill='%23111827'/><rect x='360' y='120' width='20' height='40' fill='%23111827'/><rect x='420' y='120' width='20' height='40' fill='%23111827'/><rect x='360' y='240' width='20' height='40' fill='%23111827'/><rect x='420' y='240' width='20' height='40' fill='%23111827'/><rect x='360' y='310' width='20' height='40' fill='%23111827'/><rect x='420' y='310' width='20' height='40' fill='%23111827'/></svg>",
+            macedonia: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231a237e'/><circle cx='400' cy='200' r='100' fill='%23ffb300'/><path d='M400,50 L420,100 L400,200 L380,100 Z M400,350 L420,300 L400,200 L380,300 Z M550,200 L500,220 L400,200 L500,180 Z M250,200 L300,220 L400,200 L300,180 Z' fill='%23ffb300'/></svg>",
+            carthage: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%234a0e4e'/><circle cx='400' cy='200' r='120' fill='none' stroke='%23ffcc00' stroke-width='15'/><path d='M350,150 Q400,50 450,150' fill='none' stroke='%23ffcc00' stroke-width='15'/><rect x='385' y='180' width='30' height='100' fill='%23ffcc00'/></svg>",
+            han: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%23990000'/><rect x='300' y='180' width='200' height='40' fill='%23ffd700'/><polygon points='500,170 540,200 500,230' fill='%23ffd700'/><line x1='350' y1='100' x2='350' y2='300' stroke='%23ffd700' stroke-width='20'/><path d='M350,100 Q450,200 350,300' fill='none' stroke='%23ffd700' stroke-width='10'/></svg>",
+            assyria: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%231c39bb'/><circle cx='400' cy='200' r='120' fill='%23facc15'/><path d='M350,150 L450,150 L400,280 Z' fill='%23b45309'/><circle cx='400' cy='150' r='30' fill='%2378350f'/><path d='M250,200 Q300,100 400,200 Q500,100 550,200' fill='none' stroke='%23facc15' stroke-width='15'/></svg>",
+            byzantine: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%23702963'/><line x1='400' y1='100' x2='400' y2='300' stroke='%23ffb300' stroke-width='30'/><line x1='300' y1='150' x2='500' y2='150' stroke='%23ffb300' stroke-width='30'/><path d='M400,100 C450,100 450,150 400,150' fill='none' stroke='%23ffb300' stroke-width='30'/></svg>",
+            ottoman: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%23006633'/><circle cx='400' cy='200' r='100' fill='%23ffffff'/><circle cx='430' cy='200' r='80' fill='%23006633'/><polygon points='480,200 500,180 500,220' fill='%23ffffff'/><polygon points='490,190 530,200 490,210' fill='%23ffffff'/></svg>",
+            mughal: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%23cc5500'/><path d='M200,250 Q400,350 600,150 Q550,200 400,250 Z' fill='%23e5e7eb'/><rect x='180' y='230' width='40' height='80' fill='%23d4af37' rx='5' transform='rotate(30 200 250)'/><circle cx='200' cy='280' r='15' fill='%23b45309'/></svg>",
+            inca: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%230f172a'/><circle cx='400' cy='200' r='80' fill='%23ffcc00'/><path d='M400,50 L410,100 L390,100 Z M400,350 L410,300 L390,300 Z M550,200 L500,210 L500,190 Z M250,200 L300,210 L300,190 Z M300,100 L330,130 L310,140 Z M500,100 L470,130 L490,140 Z M500,300 L470,270 L490,260 Z M300,300 L330,270 L310,260 Z' fill='%23ffcc00'/><circle cx='400' cy='200' r='50' fill='none' stroke='%23b45309' stroke-width='10'/></svg>",
+            zulu: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%238b5a2b'/><ellipse cx='400' cy='200' rx='100' ry='160' fill='%23fef3c7' stroke='%23451a03' stroke-width='10'/><line x1='400' y1='20' x2='400' y2='380' stroke='%23451a03' stroke-width='15'/><circle cx='400' cy='150' r='10' fill='%23451a03'/><circle cx='400' cy='250' r='10' fill='%23451a03'/></svg>",
+            celtic: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' fill='%23228b22'/><circle cx='400' cy='200' r='120' fill='none' stroke='%23d4af37' stroke-width='20'/><path d='M300,200 Q400,100 500,200 Q400,300 300,200 Z' fill='none' stroke='%23d4af37' stroke-width='20'/><circle cx='400' cy='200' r='40' fill='%23d4af37'/></svg>"
         };
 
         const articles = [
             {
+                id: 'egypt-omnibus',
+                category: 'egypt',
+                title: 'Lords of the Nile: Chariots, Khopesh, and Sun Power',
+                author: 'Scribe Amenhotep',
+                thumbnail: svgAssets.egypt,
+                heroImage: svgAssets.egypt,
+                summary: 'The military machine of the New Kingdom. A deep dive into chariot supremacy, the lethal mechanics of the Khopesh, and massive logistical operations along the Nile.',
+                fullText: `
+                    <p class="dropcap">The New Kingdom of Egypt (c. 1550–1069 BC) represented an apex of ancient logistical and martial power. Driven by the trauma of the Hyksos invasion, Egypt transformed from an isolated river society into a sweeping imperial war machine. The zenith of this power was demonstrated at the <strong>Battle of Kadesh (1274 BC)</strong> under Ramesses II, the largest chariot battle in human history, involving over 5,000 chariots.</p>
+                    
+                    <h2>1. Weapons of the Pharaoh: Metallurgy and Mechanics</h2>
+                    <h3>The Khopesh</h3>
+                    <p>The <strong>Khopesh</strong> is the iconic weapon of the Egyptian infantry. Evolving from the epsilon axe, this curved sword typically measured 50-60 cm in length. Metallurgically, early versions were cast from arsenical copper, but by the New Kingdom, they were forged from superior tin-bronze (roughly 90% copper, 10% tin), allowing for a harder edge. Its heavy, forward-curving blade acts like an axe, shifting the center of percussion forward to deliver devastating chopping blows to limbs and unarmored torsos, while the unsharpened back could hook away Canaanite wicker shields. The weapon was both a lethal tool and a symbol of royal authority.</p>
+                    
+                    <h3>The Composite Bow and Bronze Scale Armor</h3>
+                    <p>The true killer was the <strong>Egyptian Composite Bow</strong>. Engineered from a wooden core layered with animal horn on the belly (facing the archer, to resist compression) and sinew on the back (to resist tension), glued together with specialized animal-hide adhesives. This allowed a draw weight estimated at 60-80 lbs, giving Egyptian archers the ability to punch through early leather and bronze scale armor at ranges exceeding 200 meters. Elite charioteers wore cuirasses made of hundreds of overlapping bronze scales stitched to a leather backing, making them virtually impervious to standard flint-tipped arrows.</p>
+                    
+                    <h2>2. Tactical Formations and Siege Warfare</h2>
+                    <p>Egypt did not rely on massed heavy infantry like the later Greeks. Their core formation revolved around the <strong>War Chariot</strong>. Unlike the heavy, blocky chariots of the Hittites (which carried three men and were used for shock charges), the Egyptian chariot was incredibly light, weighing as little as 30 kg (66 lbs). Built with heat-bent ash or elm wood and featuring advanced six-spoked wheels, it carried a driver and a highly trained noble archer (Maryannu). They functioned as highly mobile firing platforms, softening enemy lines before "chariot runners"—lightly armed infantry sprinting alongside the chariots—rushed in to dispatch the wounded and secure prisoners.</p>
+                    <p><strong>Siege Warfare:</strong> Against fortified Canaanite cities like Megiddo, Thutmose III demonstrated advanced siege strategy. He ordered a circumvallation wall built from local timber around the entire city, starving the defenders out over seven months while employing early sappers and heavy scaling ladders, covered by relentless, coordinated archer fire.</p>
+
+                    <h2>3. Beasts of War & Logistics</h2>
+                    <p><strong>War Horses and Chariot Teams:</strong> The Egyptians adopted the horse from the Hyksos and bred them meticulously. Egyptian chariot horses were small by modern standards (similar to Arabian ponies) but possessed immense stamina and agility. They were trained to respond to voice commands and slight shifts in the reins, allowing the driver to navigate chaotic battlefields while the archer fired.</p>
+                    <p><strong>War Hounds:</strong> The Egyptian army, particularly contingents of Nubian mercenaries (the Medjay), frequently employed massive war hounds. Resembling modern Mastiffs or Ridgebacks, these aggressive dogs were unleashed to break enemy skirmisher lines, hunt down fleeing infantry, and guard encampments at night.</p>
+                    <p><strong>Logistics (The Way of Horus):</strong> Projecting power across the Sinai desert required mastery of logistics. The Egyptians established a network of fortified depots and wells known as the "Way of Horus," spaced exactly one day's march apart. The army marched in divisions of 5,000 men, requiring an estimated 25 tons of grain daily, moved by massive supply trains of donkeys and ox-carts, and supplemented by naval resupply along the Levantine coast.</p>
+                `
+            },
+            {
+                id: 'persia-omnibus',
+                category: 'persia',
+                title: 'The Achaemenid Juggernaut: Immortals, Sparabara, and Chariots',
+                author: 'General Mardonius',
+                thumbnail: svgAssets.persia,
+                heroImage: svgAssets.persia,
+                summary: 'The vast war machine of the Persian Empire. Analyzing the Sparabara shield wall, the composite bow, the elite Immortals, and the integration of massive multinational armies.',
+                fullText: `
+                    <p class="dropcap">The Achaemenid Persian Empire (550–330 BC) fielded armies of unimaginable scale and diversity, drawing levies from across three continents. Their doctrine relied on combined arms on an unprecedented scale, terrifyingly demonstrated during the <strong>Battle of Thermopylae (480 BC)</strong> and the <strong>Battle of Cunaxa (401 BC)</strong>.</p>
+                    
+                    <h2>1. The Arsenal: Composite Bows, Spara, and the Akinakes</h2>
+                    <h3>The Spara and Archery Doctrine</h3>
+                    <p>The foundation of Persian infantry tactics was the <strong>Sparabara</strong> (shield-bearers). The front rank carried the <strong>Spara</strong>, a large rectangular shield measuring roughly 1.5 by 1 meters, woven from tough willow wicker and covered in tanned ox hide. While practically useless against the heavy thrust of a Greek dory spear, it was highly effective at absorbing enemy arrows.</p>
+                    <p>Behind the Sparabara stood up to nine ranks of archers wielding the <strong>Persian Composite Bow</strong>. Slightly smaller than Scythian bows, it featured a double curve and draw weights estimated between 70-90 lbs. A standard Persian formation of 10,000 men could loose upwards of 100,000 arrows in a single minute, creating a dark, plunging rain of bronze-tipped death designed to completely shatter enemy morale before melee contact. The Persians viewed close-quarters combat as a last resort, preferring to annihilate enemies from a distance.</p>
+                    
+                    <h3>The Akinakes</h3>
+                    <p>Once the enemy closed, the Persians drew the <strong>Akinakes</strong>. This was a short, straight dagger or shortsword, typically 35-45 cm long, forged from early carbon steel. It was not a slashing weapon, but a dedicated thrusting blade used in the tight crush of melee combat.</p>
+                    
+                    <h2>2. The Immortals and Naval Supremacy</h2>
+                    <p>The core of the army was the <strong>Ten Thousand Immortals</strong>, the elite heavy infantry and imperial guard. Their numbers were perpetually kept at exactly 10,000. They wore corselets of iron or bronze scale mail beneath their colorful robes. They were dual-armed, carrying both composite bows and 2-meter spears tipped with iron heads and counterweighted with silver or gold pomegranates.</p>
+                    <p><strong>Naval Warfare:</strong> Persia was a land power, but they ruled the seas by conscripting the fleets of their Phoenician, Egyptian, and Ionian Greek subjects. They deployed hundreds of Triremes (agile warships with three banks of oars and a bronze ram) manned by expert maritime navigators, using them both for sea battles and massive amphibious troop transport.</p>
+
+                    <h2>3. Beasts of War & Logistics</h2>
+                    <p><strong>The Nisaean Horse:</strong> The Persians bred the legendary Nisaean horse in the plains of Media. These were the "super-horses" of the ancient world—taller, thicker, and far more powerful than Greek ponies. Their immense size allowed the Persians to field the world's first true heavy cavalry and early Cataphracts, capable of carrying men clad in solid bronze scale armor.</p>
+                    <p><strong>War Camels and Elephants:</strong> During the Battle of Thymbra (546 BC), Cyrus the Great famously deployed thousands of baggage camels on his front lines. The unfamiliar smell and sight of the camels completely panicked the elite Lydian cavalry horses, winning him the battle. Later Achaemenid armies also integrated Indian War Elephants obtained from their far eastern satrapies, using them to shatter infantry lines.</p>
+                    <p><strong>Scythed Chariots:</strong> Persia deployed terrifying heavy chariots with meter-long iron blades attached to the wheel hubs. Drawn by four heavy horses, these were "shock" weapons designed to be driven headlong into tightly packed infantry formations (like a Greek phalanx) to literally carve a bloody path and break shield cohesion.</p>
+                    <p><strong>Logistics (The Royal Road):</strong> To feed an army of hundreds of thousands, the Persians created the Royal Road, a 2,699 km highway stretching from Susa to Sardis. Supply caches (magazines) of salted meat, grain, and fodder were established years in advance of a campaign.</p>
+                `
+            },
+            {
                 id: 'rome-omnibus',
                 category: 'rome',
-                title: 'The Roman War Machine: Conquest by Iron, Shield, and Beast',
+                title: 'The Roman War Machine: Conquest by Iron, Shield, and Logistics',
                 author: 'Legate Valerius',
                 thumbnail: svgAssets.rome,
                 heroImage: svgAssets.rome,
-                summary: 'A comprehensive analysis of Roman military supremacy, detailing the Scutum shield tactics, the Gladius, and the terrifying deployment of War Hounds and anti-Elephant tactics.',
+                summary: 'A comprehensive analysis of Roman military supremacy, detailing Scutum tactics, the Gladius, siege engineering, and the terrifying deployment of War Hounds and incendiary pigs.',
                 fullText: `
-                    <p class="dropcap">Rome did not conquer the known world through mere numbers; it conquered through supreme discipline, advanced armament, and a brutal willingness to adapt to any threat. The legions represent a perfect synthesis of defensive formations, offensive lethality, and the strategic use of animals on the battlefield.</p>
-
-                    <h2>1. Defensive Tactics: The Scutum and the Testudo</h2>
-                    <p>The foundation of Roman infantry survival is the <strong>Scutum</strong>. This large, semi-cylindrical shield is constructed from strips of wood glued together and covered in canvas and leather, edged with bronze or iron. Its curved shape is designed to deflect incoming blows and missiles around the soldier, rather than absorbing the full kinetic impact.</p>
-                    <p>When subjected to heavy missile fire, disciplined legionaries form the <strong>Testudo (Tortoise) formation</strong>. Men in the front rank interlock their shields facing forward, while those behind them hold their shields flat over their heads. The men on the flanks face outwards. This creates an impenetrable armored shell, allowing the unit to march safely up to fortress walls or through barrages of Parthian arrows.</p>
-
+                    <p class="dropcap">Rome did not conquer the known world through mere numbers or individual heroism; it conquered through supreme discipline, standardized armament, and a brutal willingness to adapt. From surviving the disaster at the <strong>Battle of Cannae (216 BC)</strong> to engineering the masterpiece <strong>Siege of Alesia (52 BC)</strong>, the Roman Legion was an industrial meat-grinder.</p>
+                    
+                    <h2>1. Defensive Tactics and Armor Metallurgy</h2>
+                    <h3>The Scutum and Lorica Segmentata</h3>
+                    <p>The foundation of Roman infantry survival is the <strong>Scutum</strong>. By the Imperial era, this large, semi-cylindrical shield measured roughly 106 cm (42 in) tall and 86 cm (33 in) wide. It was constructed of three layers of wood strips glued together at alternating right angles (an ancient plywood), covered in canvas and calf leather, and bound in a bronze or iron rim. It weighed roughly 10 kg (22 lbs). The heavy iron boss (umbo) in the center was used offensively to punch enemies in the face, breaking noses and teeth before the sword was even swung.</p>
+                    <p>Legionaries were protected by <strong>Lorica Segmentata</strong>, articulated bands of case-hardened iron overlapping on internal leather straps. This provided exceptional protection against downward slashing blows and arrows, while allowing the legionary to fold his arms fully to throw his javelin. Centurions and veterans often preferred the <strong>Lorica Hamata</strong> (chainmail), which offered better flexibility.</p>
+                    
                     <h2>2. Offensive Lethality: Pilum and Gladius</h2>
-                    <p>The Roman offensive sequence is a masterclass in shock warfare. As the enemy approaches, the legion unleashes the <strong>Pilum</strong>. This heavy javelin features a long, soft-iron shank behind a hardened point. When it strikes an enemy's shield, it pierces the wood. The heavy shaft then bends upon impact, preventing the enemy from throwing it back and rendering their shield unwieldy and useless, forcing them to discard it.</p>
-                    <p>Once the enemy formation is disrupted, the Romans draw the <strong>Gladius Hispaniensis</strong>. This short, two-foot sword is primarily a thrusting weapon. In the tight crush of the battle line, a legionary remains behind his scutum, stepping forward and thrusting the gladius upward into the exposed abdomen or throat of the enemy. It is a brutally efficient, close-quarters meat-grinder.</p>
-
-                    <h2>3. Beasts of War: Hounds, Horses, and Elephants</h2>
-                    <p>While infantry was paramount, Rome heavily utilized and countered animals in warfare.</p>
-                    <ul>
-                        <li><strong>War Hounds (Canis Pugnax):</strong> Rome deployed massive, mastiff-type war dogs wearing spiked collars and sometimes even scaled armor. These hounds were used as shock troops to break enemy skirmish lines, cause panic, and rip riders from their horses. They were terrifyingly effective against unarmored adversaries in the dense forests of Germania.</li>
-                        <li><strong>Equine Cavalry:</strong> The Romans relied heavily on auxiliary cavalry (horses) to protect their flanks and run down fleeing enemies. The horse provided the mobility required to project power across vast battlefields.</li>
-                        <li><strong>Elephants and War Pigs:</strong> While Rome faced the terrifying charge of Carthaginian war elephants (used to shatter infantry lines and trample troops), they quickly developed counter-tactics. They opened lanes in their formations to let the beasts pass, or famously deployed <strong>Incendiary War Pigs</strong>. The squealing of burning pigs terrified the elephants, causing them to stampede back into their own lines.</li>
-                    </ul>
-
-                    <h2>4. Naval Supremacy: The Quinquereme and Corvus</h2>
-                    <p>Initially a land power, Rome faced the maritime dominance of Carthage. They rapidly engineered massive fleets of galleys, most notably the <strong>Quinquereme</strong> (featuring five banks of oarsmen). </p>
-                    <p>Knowing their sailors could not out-maneuver the Carthaginians, Rome invented the <strong>Corvus (Raven)</strong>. This was a massive boarding bridge with a heavy iron spike on the bottom. When dropped onto an enemy deck, it locked the two ships together, allowing heavily armed legionaries to pour across and turn a naval skirmish into a brutal infantry battle at sea. This innovation won Rome the First Punic War.</p>
+                    <p>The Roman offensive sequence began at 15 meters with the volley of the <strong>Pilum</strong>. This heavy javelin was 2 meters long, with a 7mm thick, 60cm long soft-iron shank terminating in a hardened pyramidal point. The physics were insidious: upon piercing an enemy shield, the heavy wooden shaft provided immense kinetic momentum, driving the point through the shield and into the man. Even if it missed the man, the soft iron shank bent under the weight of the shaft, locking it into the enemy's shield, forcing them to discard their primary defense.</p>
+                    <p>Following the volley, the legionaries charged, drawing the <strong>Gladius Hispaniensis</strong>. Measuring 60 cm (24 in) in blade length, it was forged from high-carbon steel. In the tight crush of the battle line, Romans were trained not to slash, but to step forward and deliver a lethal 5 cm thrust into the enemy's abdomen or groin from behind the safety of the Scutum.</p>
+                    
+                    <h2>3. Beasts of War & Siege Engineering</h2>
+                    <p><strong>War Hounds (Canis Pugnax):</strong> The Romans heavily utilized the Molossian hound (ancestors of the modern Mastiff). Outfitted with spiked collars and sometimes coats of mail, these massive dogs were starved before battle and unleashed to disrupt enemy cavalry lines or tear down lightly armored skirmishers. They were also vital for guarding the Roman camps at night.</p>
+                    <p><strong>Anti-Elephant Tactics (Flaming Pigs):</strong> When confronting Carthaginian or Pyrrhic war elephants, Roman generals discovered a brutal countermeasure. They would cover live pigs in pitch, set them on fire, and drive them toward the enemy lines. The horrific squealing and flames of the pigs caused the highly sensitive elephants to panic and stampede back through their own lines, crushing their own infantry.</p>
+                    <p><strong>Marius' Mules:</strong> Following the Marian Reforms, Roman logistics became deeply reliant on pack mules. To increase march speed and reduce the vulnerable baggage train, General Marius forced each legionary to carry up to 60 lbs of gear on a forked stick over his shoulder. The soldiers jokingly called themselves "Marius' Mules," though real mules and oxen were still used to pull heavy artillery and tents.</p>
+                    <p><strong>Siege Warfare (Alesia):</strong> At Alesia, Julius Caesar's engineering corps achieved a tactical marvel. Facing 80,000 Gauls inside a fortress and a relief army of 250,000 outside, Caesar built a <strong>circumvallation</strong> wall (18 km long facing inward) and a <strong>contravallation</strong> wall (21 km long facing outward). Supported by torsion-powered artillery (Scorpio bolt-throwers and Onager catapults) and thousands of hidden traps (lilia), 50,000 Romans successfully starved out and defeated a combined force of over 300,000.</p>
                 `
             },
             {
@@ -184,29 +276,50 @@
                 author: 'Ephor Cleomenes',
                 thumbnail: svgAssets.sparta,
                 heroImage: svgAssets.sparta,
-                summary: 'The Spartan military apparatus dissected: from the crushing pressure of the Phalanx, to the Dory spear, Molossian war hounds, and the bronze-rammed Triremes.',
+                summary: 'The Spartan military apparatus dissected: from the crushing pressure of the Phalanx, to the Dory spear, Helot logistics, and the Laconian hunting hounds.',
                 fullText: `
-                    <p class="dropcap">To be Spartan is to be born for war. Surrounded by hostile states and a massive enslaved helot population, Lacedaemon survives only through martial perfection. Their approach to combat relies on heavy bronze, unbreakable psychological discipline, and the sheer physical trauma they inflict upon their foes.</p>
-
-                    <h2>1. The Shield: The Aspis and the Phalanx</h2>
-                    <p>The core of Greek warfare is the <strong>Aspis</strong> (often called a hoplon). Weighing upwards of 15 pounds, this deeply dished wooden shield, faced with a thin layer of bronze, is gripped firmly on the left forearm. It covers the hoplite from chin to knee.</p>
-                    <p>The Aspis dictates the tactical formation: the <strong>Phalanx</strong>. Men stand shoulder-to-shoulder, eight deep. A hoplite's shield protects his own left side and the right side of the man to his left. The battle begins with the <em>Othismos</em> (the shove)—the terrifying physical collision where the rear ranks push the front ranks into the enemy, crushing them under the sheer weight of bronze and muscle until the enemy line splinters.</p>
-
+                    <p class="dropcap">To be Spartan is to be born for war. Surrounded by hostile states and a massive enslaved helot population that outnumbered them seven to one, Lacedaemon survived only through martial perfection. Their legend was forged in the blood of <strong>Thermopylae (480 BC)</strong>, honed in the Peloponnesian War, and finally broken by Theban tactics at <strong>Leuctra (371 BC)</strong>.</p>
+                    
+                    <h2>1. The Shield: The Aspis and Othismos</h2>
+                    <p>The core of Greek warfare is the <strong>Aspis</strong> (often mistakenly called a hoplon). Measuring roughly 1 meter (39 in) in diameter and weighing a staggering 7.3 kg (16 lbs), this deeply dished wooden shield (often willow or poplar) was faced with a thin layer of bronze. It featured a revolutionary grip system: the <em>porpax</em> (a bronze band in the center through which the forearm passed) and the <em>antilabe</em> (a leather grip at the edge). This distributed the immense weight across the arm, allowing hoplites to hold it for hours.</p>
+                    <p>The shield dictated the tactical formation: the <strong>Phalanx</strong>. Men stood shoulder to shoulder, their shields overlapping to cover the unarmored right side of the man to their left. Combat inevitably devolved into the <em>Othismos</em>, a terrifying, claustrophobic shoving match where ranks of men physically pushed their shields into the backs of the men in front of them, attempting to literally crush and trample the enemy line through sheer collective leg drive.</p>
+                    
                     <h2>2. Offensive Arms: Dory and Xiphos</h2>
-                    <p>From behind the shield wall, the Spartan thrusts with the <strong>Dory</strong>, an 8-foot spear. Gripped overhand, it is used to strike at the unprotected neck and eyes of the enemy over the rim of the shields. If the spearhead snaps, the weapon is reversed to utilize the <em>sauroter</em>, a bronze spike at the base, used for finishing off fallen enemies.</p>
-                    <p>If the formation breaks down into chaotic melee, the Spartan draws his <strong>Xiphos</strong>. The Spartan variant was notoriously short—barely more than a large dagger—designed for lethal, close-quarters stabbing where longer swords would be caught on shields or limbs.</p>
+                    <p>From behind the shield wall, the Spartan thrusts with the <strong>Dory</strong>, an ash-wood spear measuring 2.5 to 3 meters (8-9 ft) in length. Gripped overhand, it was aimed downward at the unprotected neck, collarbones, and eyes of the enemy. The spear featured an iron leaf-shaped head and a heavy bronze butt-spike known as the <em>sauroter</em> (lizard-killer). If the spearhead snapped in the crush, the weapon was rapidly reversed. The sauroter was also used to dispatch fallen enemies as the phalanx marched over them.</p>
+                    <p>If the formation broke, the Spartan drew his <strong>Xiphos</strong>. The Spartan variant of this straight, leaf-bladed sword was notoriously short—barely 30 cm (12 in), essentially a large dagger. It was designed for lethal, close-quarters stabbing through gaps in armor where longer swords would be caught on adjacent shields. When mocked for its size, an Athenian once said Spartan swords were so short a juggler could swallow them. A Spartan replied, "They are long enough to reach the heart."</p>
+                    
+                    <h2>3. Beasts of War & Logistics</h2>
+                    <p><strong>The Laconian Hound:</strong> While Spartans did not heavily use war dogs in the phalanx line, they bred the legendary Laconian Hound. These dogs were primarily used for hunting (which was considered vital military training) but were frequently brought on campaign to track escaped prisoners, guard the baggage train, and act as sentries to prevent nighttime ambushes.</p>
+                    <p><strong>The Cavalry Deficit:</strong> The geography of the Peloponnese was terrible for horse breeding. Sparta possessed almost no native cavalry for most of its history, viewing horsemen as wealthy aristocrats rather than true soldiers. They relied almost entirely on their allied states (like Corinth) to protect their flanks from enemy skirmishers and horsemen.</p>
+                    <p><strong>Logistics (The Helot Burden):</strong> Spartans were forbidden from farming or trade; their entire lives were devoted to the <em>agoge</em> (military training). Logistics were entirely handled by enslaved Helots. On campaign, each Spartan hoplite was accompanied by up to seven helot servants who drove the slow ox-carts, carried the heavy armor, foraged for food, and acted as light skirmishers (psiloi) hurling rocks and javelins.</p>
+                    <p><strong>Siege Limitations:</strong> Sparta was notoriously terrible at sieges. They lacked any engineering corps and viewed hiding behind or attacking walls as cowardly. They preferred to march into enemy territory and ravage the agricultural land, forcing the enemy out into an open, decisive field battle.</p>
+                `
+            },
+            {
+                id: 'vikings-omnibus',
+                category: 'vikings',
+                title: 'Fury of the Northmen: Longships, Steel, and the Shield Wall',
+                author: 'Jarl Hastein',
+                thumbnail: svgAssets.vikings,
+                heroImage: svgAssets.vikings,
+                summary: 'The terror of the Viking Age. A deep analysis of Clinker-built longships, the metallurgy of Ulfberht swords, the devastating Dane Axe, and the use of Norse horses and ravens.',
+                fullText: `
+                    <p class="dropcap">From the late 8th to the 11th century, the Norsemen dominated European waterways and battlefields. Initiating their terror at the <strong>Sack of Lindisfarne (793)</strong> and culminating in their final major defeat at the <strong>Battle of Stamford Bridge (1066)</strong>, Viking warfare was characterized by unparalleled mobility, fierce close-quarters combat, and psychological shock against unprepared kingdoms.</p>
 
-                    <h2>3. Beasts of the Peloponnese: Molossian Hounds</h2>
-                    <p>While the Phalanx was composed solely of men, the Spartans were well-versed in the martial use of animals.</p>
-                    <ul>
-                        <li><strong>War Hounds (Molossians):</strong> Sparta utilized massive mastiff-like hounds imported from Epirus. These dogs were armored and unleashed before the main infantry clash to disrupt enemy skirmishers, spread terror, and break up loose formations. A 150-pound hound leaping at a man's throat requires immediate attention, creating openings for the Spartan advance.</li>
-                        <li><strong>Horses:</strong> Due to the mountainous terrain of Greece, heavy cavalry was rare. However, Spartans used horses for rapid communication, scouting, and running down routed enemies, ensuring a defeated army could not reform.</li>
-                        <li><strong>Elephants:</strong> While absent in classical Sparta, Spartan mercenaries later faced them in the Hellenistic period, learning to target the mahout (driver) or the beast's vulnerable joints with missile fire.</li>
-                    </ul>
+                    <h2>1. The Arsenal of Odin: Ulfberht Swords and Dane Axes</h2>
+                    <h3>The Ulfberht Sword</h3>
+                    <p>While the spear was the most common weapon, the sword was a status symbol of immense value. The pinnacle of Viking metallurgy was the legendary <strong>Ulfberht sword</strong>. These blades were forged from imported crucible steel (likely via trade routes to the Middle East). Containing up to three times the carbon content of contemporary European swords and completely free of slag impurities, the Ulfberht was incredibly sharp, flexible, and virtually unbreakable in combat, allowing a warrior to parry heavy blows without the blade shattering.</p>
+                    
+                    <h3>The Dane Axe</h3>
+                    <p>For sheer destructive power, the Viking elite (Huscarls) utilized the <strong>Dane Axe</strong>. This massive two-handed weapon featured a broad, thin iron blade with a hardened steel edge, often 30 cm (12 in) across, mounted on an ash shaft up to 1.5 meters long. It was swung with enough kinetic force to cleave through mail armor, splinter shields, and decapitate horses in a single blow. Its thin blade profile prevented it from getting stuck in wood or bone.</p>
 
-                    <h2>4. Naval Power: The Bronze-Beaked Trireme</h2>
-                    <p>Though famous for their infantry, Sparta commanded formidable fleets during the Peloponnesian War. The vessel of choice was the <strong>Trireme</strong>, a sleek galley powered by three banks of oars (170 rowers).</p>
-                    <p>The Trireme was not a transport; it was a guided missile. The primary tactic was to row at ramming speed, using the heavy bronze beak at the waterline to smash into the wooden flank of an enemy ship, shattering its oars and opening a catastrophic hole in the hull. Boarding actions by Spartan marines followed if the ship did not immediately sink.</p>
+                    <h2>2. Tactical Formations: The Skjaldborg</h2>
+                    <p>In pitched battles, Vikings relied on the <strong>Skjaldborg (Shield Wall)</strong>. Warriors locked their round, meter-wide linden-wood shields together, overlapping the iron rims. The front ranks absorbed missile fire and enemy charges, while the second rank stabbed over the top with long ash spears. Berserkers, warriors whipped into a trance-like fury (possibly induced by henbane or extreme psychological conditioning), were sometimes used as shock troops to shatter enemy lines, fighting without mail armor and biting their shields in rage.</p>
+
+                    <h2>3. Beasts of War & Naval Logistics</h2>
+                    <p><strong>Norse Horses and The Great Heathen Army:</strong> Vikings did not fight as cavalry; however, they heavily utilized the native Norse horses (like the Fjord horse). These small, incredibly sturdy ponies were stolen or requisitioned immediately upon landing in England or France. The Vikings used them as mounted infantry to achieve terrifying strategic mobility, moving across kingdoms far faster than Anglo-Saxon armies could react, before dismounting to fight on foot.</p>
+                    <p><strong>Ravens and Dogs:</strong> Mythology and warfare intertwined. Vikings kept massive hunting dogs (ancestors of the Elkhound) to guard their coastal camps. More famously, Norse navigators (like Flóki Vilgerðarson) carried caged ravens on their longships. When lost at sea, they would release a raven; if it flew aimlessly, land was far. If it flew with purpose, they sailed in that direction to find land.</p>
+                    <p><strong>Naval Logistics:</strong> The secret to Viking supremacy was the <em>Langskip</em> (Longship). Constructed using the clinker method (overlapping oak planks riveted together with iron), the hull was incredibly flexible, bending with ocean waves rather than breaking. More importantly, they had an astonishingly shallow draft—often less than a meter. This allowed Vikings to cross the brutal North Sea, and then immediately sail hundreds of miles up shallow inland rivers (like the Seine or Thames) to strike Paris or London without warning, bypassing coastal defenses entirely.</p>
                 `
             },
             {
@@ -216,60 +329,103 @@
                 author: 'Sir Geoffrey de Charny',
                 thumbnail: svgAssets.medieval,
                 heroImage: svgAssets.medieval,
-                summary: 'Exploring the devastating shock tactics of the Medieval era, featuring heavy cavalry on Destrier warhorses, the evolution of the shield, and massive war fleets.',
+                summary: 'Exploring the devastating shock tactics of the Medieval era, Heavy Cavalry Destriers, the evolution of castle sieges, and a deep dive into Longbows vs Crossbows.',
                 fullText: `
-                    <p class="dropcap">The battlefields of Medieval Europe were domains of extreme violence, governed by a deadly arms race between armorsmiths and weapon-makers. At the center of this maelstrom was the armored knight, backed by levied infantry, terrifying beasts of war, and fleets that transported crusades across the sea.</p>
-
-                    <h2>1. Shield Evolution: From Kite to Heater</h2>
-                    <p>In the early medieval period (e.g., Hastings in 1066), the <strong>Kite Shield</strong> was dominant. Its elongated teardrop shape was specifically designed to protect the leading leg of a mounted knight, while also allowing infantry to form overlapping shield walls. </p>
-                    <p>As plate armor advanced, covering the legs entirely with steel, massive shields became redundant and cumbersome. They evolved into the smaller <strong>Heater Shield</strong> (resembling an iron heater). This smaller shield was highly maneuverable, used actively to parry heavy sword blows and lance strikes, while proudly displaying the knight's heraldry.</p>
-
-                    <h2>2. Weapons of Armor-Defeat: Lance and Longsword</h2>
-                    <p>The defining weapon of the era is the couched <strong>Lance</strong>. Tucked tightly under the knight's arm, the lance transfers the entire momentum of a galloping 1,500-pound warhorse into a steel point barely an inch across, capable of shattering shield walls and throwing men yards backward.</p>
-                    <p>In dismounted combat, the <strong>Longsword</strong> reigned supreme. Wielded with two hands, it provided immense leverage. Against heavily armored foes, knights employed 'half-swording'—gripping the blade with armored gloves to drive the point with extreme precision into the weak points of an enemy's visor or armpit, acting more like a short spear than a cutting tool.</p>
-
-                    <h2>3. The Animal Kingdom at War</h2>
-                    <p>Medieval warfare relied entirely on muscle power, both human and animal.</p>
-                    <ul>
-                        <li><strong>The Destrier (Warhorse):</strong> The true weapon of the knight was his horse. Bred for aggression and size, the Destrier was a weapon of psychological and physical shock. A massed cavalry charge was designed to literally trample infantry into the mud. They were trained to bite, kick, and rear on command.</li>
-                        <li><strong>War Hounds (Mastiffs and Alaunts):</strong> Enormous war dogs were frequently deployed in medieval armies. Wearing spiked collars and sometimes boiled leather armor, they were released to hunt down fleeing enemies, drag knights off their horses, and guard encampments against nocturnal raids.</li>
-                        <li><strong>Pigs and Incendiaries:</strong> In siege warfare, pigs were famously used (as at Rochester Castle in 1215) where their fat was used to fuel massive fires under the wooden props of mined castle walls, causing the towers to collapse.</li>
-                    </ul>
-
-                    <h2>4. Naval Warfare: Cogs and Galleys</h2>
-                    <p>Medieval navies moved vast armies. The primary northern ship was the <strong>Cog</strong>. With high sides and massive fore and aft 'castles', the Cog was essentially a floating fortress. Naval battles mirrored land battles: ships would grapple together, and archers would fire down from the high castles before men-at-arms boarded for bloody hand-to-hand combat.</p>
+                    <p class="dropcap">The battlefields of Medieval Europe were governed by a deadly, centuries-long arms race between armorsmiths and weapon-makers. At the center was the heavily armored knight, backed by levied infantry, complex logistical trains, and devastating missile weapons that defined slaughters like the <strong>Battle of Agincourt (1415)</strong> and <strong>Crecy (1346)</strong>.</p>
+                    
+                    <h2>1. The Missile Revolution: Longbow vs. Crossbow</h2>
+                    <h3>The English Longbow</h3>
+                    <p>The <strong>English Longbow</strong> was a terrifying weapon of mass suppression. Crafted from a single piece of high-altitude yew wood (where the sapwood handles tension and heartwood handles compression), it stood nearly 2 meters (6 ft) tall. It required a lifetime of skeletal training to pull its 150-180 lb draw weight. A trained longbowman could loose 10 to 12 armor-piercing square-section bodkin arrows a minute. At Agincourt, 7,000 archers created a plunging rain of steel—roughly 70,000 arrows a minute—that turned the muddy battlefield into a slaughterhouse for French men-at-arms.</p>
+                    
+                    <h3>The Steel Crossbow</h3>
+                    <p>Conversely, the <strong>Crossbow (Arbalest)</strong> represented mechanical lethality requiring minimal training. Utilizing a prod made of spring steel, it featured immense draw weights (up to 1,200 lbs) drawn back via mechanical windlasses or cranequins. While its fire rate was exceptionally slow (1-2 shots a minute), a peasant could punch a heavy iron quarrel through a noble knight's breastplate at 50 meters. Crossbowmen operated as highly paid mercenaries (like the Genoese), reloading behind massive wooden <em>Pavise shields</em> planted in the ground.</p>
+                    
+                    <h2>2. Armor Metallurgy and Melee Dominance</h2>
+                    <p>By the 15th century, knights wore full suits of <strong>White Armor</strong> (plate armor). Forged from case-hardened steel, surfaces were heavily fluted and rounded to deflect points. A full suit weighed 20-25 kg (45-55 lbs), distributed perfectly across the body, allowing the knight to sprint, jump, and fight with high agility.</p>
+                    <p>Because swords could not cut through plate, knights transitioned to the <strong>Longsword</strong> for 'half-swording' (gripping the blade to drive the point into visor slits or armpits with extreme leverage). However, the true kings of the infantry melee were <strong>Polearms</strong>. The aristocrat's choice was the <em>Pollaxe</em>, featuring a heavy hammer head designed to deliver massive blunt-force trauma, concussing a knight inside his impenetrable helmet and breaking bones beneath the steel.</p>
+                    
+                    <h2>3. Beasts of War & Castle Sieges</h2>
+                    <p><strong>The Destrier and Barding:</strong> The medieval knight was useless without his mount. European horse-breeders created specific classes of warhorses. The <strong>Destrier</strong> was the most expensive and powerful, an aggressive, muscular stallion bred explicitly for the shock charge. They were protected by <em>Barding</em> (horse armor) made of chainmail, boiled leather, or articulated steel plates to protect their flanks from arrows. Lighter horses called <em>Coursers</em> were used for skirmishing, and <em>Rounceys</em> for general riding and squires.</p>
+                    <p><strong>War Pigs and Sapping:</strong> Animals were used ingeniously in sieges. At the Siege of Rochester Castle (1215), King John famously ordered his sappers to dig a tunnel beneath the castle keep. To collapse it, he brought in the fat of 40 pigs, using it to create an intense grease fire that burned away the wooden support props, successfully collapsing the massive stone corner tower.</p>
+                    <p><strong>Siege Logistics (Chevauchée):</strong> Medieval armies were logistical nightmares. They required massive baggage trains of slow ox-carts. Because supply lines were easily cut, armies utilized <em>Chevauchée</em> tactics—deliberately burning, pillaging, and slaughtering the livestock of the enemy countryside to feed themselves, deny resources to the enemy, and force the defending lord into a pitched battle.</p>
                 `
             },
             {
-                id: 'vikings-omnibus',
-                category: 'vikings',
-                title: 'Fury of the Northmen: Sea, Shield, and Axe',
-                author: 'Jarl Hastein',
-                thumbnail: svgAssets.vikings,
-                heroImage: svgAssets.vikings,
-                summary: 'The terror of the Norsemen: Masterful longship engineering, the impenetrable Skjaldborg (shield wall), massive Dane axes, and the use of massive wolfhounds in combat.',
+                id: 'mongol-omnibus',
+                category: 'mongol',
+                title: 'The Steppe Storm: Horse Archers, Recurve Bows, and Terror',
+                author: 'Subutai Bahadur',
+                thumbnail: svgAssets.mongol,
+                heroImage: svgAssets.mongol,
+                summary: 'The unstoppable Mongol hordes. Detailed analysis of the Mongol Recurve Bow, extreme cavalry mobility, feigned retreats, and the absolute reliance on the Steppe Pony and hunting eagles.',
                 fullText: `
-                    <p class="dropcap">From the icy fjords of Scandinavia, the Vikings exploded onto the world stage, forever altering the geopolitical landscape of Europe. Their success was not born of mindless savagery, but of masterful naval engineering, brutal infantry tactics, and a warrior ethos that embraced death on the battlefield.</p>
-
-                    <h2>1. The Skjaldborg: The Viking Shield Wall</h2>
-                    <p>The Norse warrior's primary defense was the round wooden shield, typically constructed of linden wood. It featured a central iron boss that protected the hand. This shield was not strapped to the arm; it was gripped by a single central handle, allowing the warrior to punch forward with the boss to bash an enemy's face or weapon.</p>
-                    <p>In pitched battle, Vikings formed the <strong>Skjaldborg (Shield Wall)</strong>. Warriors stood shoulder-to-shoulder, their round shields overlapping by up to a third. This created a solid timber barricade against arrows and cavalry. It was an offensive formation as much as defensive; the wall would slowly march forward, seeking to outflank or crush the opposing line through sheer weight and pressure.</p>
-
-                    <h2>2. The Tools of Slaughter: Dane Axe and Ulfberht</h2>
-                    <p>While spears were common, the Viking is legendary for two specific weapons.</p>
-                    <p>The two-handed <strong>Dane Axe</strong> possessed a broad, razor-sharp iron blade. Wielded by the tallest and strongest warriors, it was designed to cleave through mail armor and shatter shields. A clean strike could easily decapitate a horse or split a man to the sternum.</p>
-                    <p>For the elite, there was the <strong>Ulfberht Sword</strong>. Forged from high-crucible steel imported from the Middle East, these swords were impossibly strong, flexible, and sharp compared to the brittle iron weapons of their European victims. They were prestige weapons, symbols of immense wealth and lethal capability.</p>
-
-                    <h2>3. Beasts of the North: Elkhounds and Ponies</h2>
-                    <p>Animals played a crucial, if unconventional, role in Viking expeditions.</p>
-                    <ul>
-                        <li><strong>War Dogs (Irish Wolfhounds & Elkhounds):</strong> Vikings highly prized massive hounds. During raids in Ireland and Britain, they captured and utilized giant wolfhounds. In battle, these massive dogs were loosed into the enemy ranks to cause chaos, tear at limbs, and create gaps in enemy shield walls that the axemen could exploit.</li>
-                        <li><strong>Viking Horses:</strong> While they rarely fought on horseback like medieval knights, the Vikings were masters of stealing local horses upon landing. This granted them immense strategic mobility, allowing a raiding party to strike monasteries 30 miles inland and return to their ships before a local army could respond.</li>
-                    </ul>
-
-                    <h2>4. The Drakkar: The Dragon Ship</h2>
-                    <p>The key to Viking dominance was the <strong>Longship (Drakkar)</strong>. Built with a 'clinker' construction (overlapping oak planks), the ship was incredibly flexible, riding over ocean swells rather than breaking against them.</p>
-                    <p>Its most terrifying feature was its shallow draft. A ship carrying 60 heavily armed men drew only three feet of water. This allowed Vikings to cross the brutal North Sea, and then sail directly up shallow rivers like the Seine or Thames, striking deep into the heart of undefended territory and beaching the ships directly on the sand for an immediate amphibious assault.</p>
+                    <p class="dropcap">The Mongol Empire created the largest contiguous land empire in human history, sweeping from Korea to Hungary. Their success stemmed from unparalleled mobility, devastating ranged firepower, and a strategic brilliance demonstrated at the annihilation of Russian forces at the <strong>Battle of the Kalka River (1223)</strong> and the destruction of the Khwarazmian Empire.</p>
+                    
+                    <h2>1. The Ultimate Weapon: The Mongol Recurve Bow</h2>
+                    <p>The core of the Mongol arsenal was the <strong>Mongol Composite Recurve Bow</strong>. Smaller than the English Longbow to allow firing from horseback, it was heavily reflexed (curving away from the archer when unstrung, requiring immense force just to string it). Made of a bamboo or mulberry wood core, horn on the belly, and sinew on the back, its draw weight frequently exceeded 100-160 lbs. The use of a bone thumb ring allowed a crisp release, propelling heavy armor-piercing bodkin arrows with enough kinetic force to penetrate mail at 50 meters, with a maximum harassment range of over 300 meters.</p>
+                    <p>Mongols carried specialized quivers and up to 60 arrows: wide broadheads for unarmored horses, and heavy armor-piercing points. Crucially, they also utilized <em>whistling arrows</em> to signal complex maneuvers across chaotic, smoke-filled battlefields. Under their lamellar armor (made of hardened leather or iron scales), warriors wore raw silk shirts; when an arrow struck, the silk would not tear, but wrap around the arrowhead, allowing it to be cleanly pulled out of the wound.</p>
+                    
+                    <h2>2. Tactics: The Mangudai and Psychological Warfare</h2>
+                    <p><strong>The Feigned Retreat:</strong> The Mongols perfected the <em>Mangudai</em> tactic. A vanguard unit would aggressively attack the enemy and then abruptly turn and flee in apparent panic, sometimes throwing away weapons to sell the ruse. Disciplined European and Middle-Eastern armies would inevitably break formation to pursue, only to be drawn for miles into a massive, pre-planned encirclement. Exhausted and disorganized, they were peppered with arrows from all sides and utterly destroyed by heavy Mongol cavalry wielding lances and Turko-Mongol sabers.</p>
+                    
+                    <h2>3. Beasts of War & Extreme Logistics</h2>
+                    <p><strong>The Steppe Pony:</strong> The Mongol war machine ran entirely on the Mongolian horse. These ponies were short, incredibly tough, capable of surviving sub-zero winters, and could forage through deep snow. A Mongol army traveled without a slow baggage train. Each warrior maintained a "string" of three to five hardy steppe ponies, rotating mounts mid-gallop to cover up to 100 miles a day. In desperate times, a rider would open a small vein in his horse's neck, drink a cup of blood mixed with mare's milk, close the wound, and continue riding.</p>
+                    <p><strong>The Nerge (The Great Hunt):</strong> Mongol military discipline was honed using animals. During winter, massive armies would form a circle hundreds of miles wide, slowly driving wild animals (wolves, deer, boars) to the center over weeks. Using hunting eagles and massive Mastiff-like dogs to keep the animals contained, the warriors were forbidden to kill the animals until the Khagan struck the first blow. This trained the army in complex, massive-scale encirclement tactics.</p>
+                    <p><strong>Biological and Siege Warfare:</strong> Originally nomads with no siege knowledge, the Mongols brilliantly conscripted Chinese and Muslim engineers. During the Siege of Caffa (1346), they famously catapulted plague-infested corpses over the walls—one of the first recorded uses of biological warfare, sparking the Black Death in Europe.</p>
+                `
+            },
+            {
+                id: 'japan-omnibus',
+                category: 'japan',
+                title: 'Way of the Warrior: Katana, Yari, and Castle Sieges',
+                author: 'Daimyo Takeda',
+                thumbnail: svgAssets.japan,
+                heroImage: svgAssets.japan,
+                summary: 'The sophisticated warfare of Feudal Japan. Examining the metallurgy of the Katana, the rise of the Ashigaru, complex troop formations, and the vicious native Japanese war horses.',
+                fullText: `
+                    <p class="dropcap">The Sengoku Jidai (Warring States Period, c. 1467–1615) of Japan was a crucible of continuous, ruthless warfare. It evolved rapidly from ritualistic, individual samurai combat based on horseback archery into massive, sophisticated combined-arms engagements involving hundreds of thousands of men, famously decided at the <strong>Battle of Sekigahara (1600)</strong>.</p>
+                    
+                    <h2>1. The Weapons: Katana Metallurgy and Ashigaru Yari</h2>
+                    <h3>The Katana</h3>
+                    <p>The soul of the Samurai is the <strong>Katana</strong>. To overcome the poor quality of Japanese iron sand, swordsmiths developed a complex folding technique to homogenize the steel (tamahagane) and work out impurities. The genius of the katana lies in <em>differential hardening</em>. The smith coats the spine of the blade in a thick layer of clay, leaving the edge exposed before quenching it in water. The edge cools instantly, forming ultra-hard, brittle <em>martensite</em> steel (which can hold a razor edge to cut through lacquered armor). The clay-insulated spine cools slowly, forming softer, flexible <em>pearlite</em> steel. This creates the sword's signature curve and allows the blade to absorb the massive shock of combat without snapping.</p>
+                    
+                    <h3>The Yari and Tanegashima</h3>
+                    <p>While the katana was the sidearm, the primary weapon of the battlefield was the <strong>Yari</strong> (spear). Peasant infantry (Ashigaru) were armed with extra-long yari (often 4 to 5 meters long) featuring triangular-sectioned armor-piercing points. They formed bristling, hedgehog-like walls of blades to completely shut down enemy cavalry charges. Following 1543, Japan rapidly adopted and mass-produced Portuguese matchlock muskets (<strong>Tanegashima</strong>), integrating disciplined volley-fire into their Ashigaru formations with devastating effect at the Battle of Nagashino.</p>
+                    
+                    <h2>2. Armor: Kozane and Tosei-Gusoku</h2>
+                    <p>Samurai armor (O-yoroi) evolved from boxy, heavy lamellar scales designed to protect horse archers, into <strong>Tosei-Gusoku</strong> (modern armor). This utilized solid iron plates contoured to the body, often laced with silk and covered in waterproof lacquer. It was lighter, better suited for infantry melee, and crucially, offered a degree of protection against the rising threat of musket fire.</p>
+                    
+                    <h2>3. Beasts of War & Castle Sieges</h2>
+                    <p><strong>The Kiso War Pony:</strong> The cinematic image of Samurai riding massive Arabian stallions is a myth. The native Japanese war horse (like the Kiso breed) was essentially a pony, standing only 12 to 13 hands high. However, they were incredibly stocky, powerful, and notoriously vicious, known to bite and kick enemy soldiers. Samurai like the famous Takeda clan used them in dense, wedge-shaped cavalry charges to smash through Ashigaru spear walls.</p>
+                    <p><strong>Messenger Birds and Camp Dogs:</strong> Large Daimyo armies utilized trained falcons and homing pigeons to pass coded messages between mountain fortresses. Akita-like dogs were kept in encampments to alert guards to nighttime Shinobi (ninja) infiltrations.</p>
+                    <p><strong>Siege Warfare (Shiro):</strong> Japanese castles were masterpieces of defensive engineering, built on massive, curved stone foundations (ishigaki) designed to flex and resist devastating earthquakes. The approach to the towering central keep (tenshu) was a labyrinth of switchbacks, gates, and walled courtyards. These kill zones forced attackers to expose their unshielded sides to defenders firing bows and matchlocks through specialized loopholes (sama) cut into the plaster walls.</p>
+                `
+            },
+            {
+                id: 'aztec-omnibus',
+                category: 'aztec',
+                title: 'The Jaguar and the Eagle: Blood, Obsidian, and the Flower Wars',
+                author: 'Tlatoani Moctezuma',
+                thumbnail: svgAssets.aztec,
+                heroImage: svgAssets.aztec,
+                summary: 'The ritualistic and brutal warfare of Mesoamerica. Exploring the razor-sharp Macuahuitl, human porters instead of pack animals, and the tactical goal of capturing live prisoners.',
+                fullText: `
+                    <p class="dropcap">Warfare in the Aztec Triple Alliance (1428–1521) was intrinsically bound to religion, politics, and the relentless need for sacrificial captives to appease Huitzilopochtli, the sun god. They waged highly organized, empire-spanning wars without beasts of burden, iron, or gunpowder, culminating in the horrific urban combat of the <strong>Siege of Tenochtitlan (1521)</strong> against the Spanish.</p>
+                    
+                    <h2>1. The Arsenal of Glass: Macuahuitl and Atlatl</h2>
+                    <h3>The Macuahuitl</h3>
+                    <p>The most iconic weapon of the elite Jaguar and Eagle knights was the <strong>Macuahuitl</strong>. This was a heavy, cricket-bat shaped wooden club (often carved from oak or pine) measuring about 1 meter long, with grooves along the edges embedded with prismatic blades of obsidian (volcanic glass). Obsidian fractures to a macrocrystalline edge, capable of being sharper than modern surgical steel scalpels. A single two-handed blow could cleanly decapitate a horse. However, the brittle glass would shatter against Spanish steel armor. Crucially, the flat sides were frequently used to bludgeon enemies unconscious, as capturing a live warrior was far more prestigious than killing him.</p>
+                    
+                    <h3>The Atlatl</h3>
+                    <p>Before closing to melee, Aztec skirmishers utilized the <strong>Atlatl (spear-thrower)</strong>. This wooden device extended the lever arm of the thrower, allowing heavy, flexible 1.5-meter darts (tipped with obsidian or copper) to be hurled with immense kinetic velocity—capable of punching through Spanish chainmail at close ranges.</p>
+                    
+                    <h2>2. Armor: The Ichcahuipilli</h2>
+                    <p>Aztec armor was perfectly adapted to their environment and weapons. They wore the <strong>Ichcahuipilli</strong>, a thick, quilted cotton tunic soaked in brine and hung out to dry. The salt crystallized within the tightly woven cotton fibers, creating a stiff, remarkably resilient armor that was highly effective at absorbing the impact of obsidian shards, arrows, and atlatl darts. It was so light, breathable, and effective that Spanish Conquistadors frequently abandoned their suffocating steel cuirasses to wear stolen Aztec cotton armor.</p>
+                    
+                    <h2>3. Beasts of War & Mesoamerican Logistics</h2>
+                    <p><strong>The Shock of Horses and Mastiffs:</strong> The Mesoamerican world possessed zero large domesticated animals (no horses, cows, or mules). When the Spanish arrived, the Aztecs initially believed a man on horseback was a single, terrifying two-headed beast. Furthermore, the Spanish unleashed massive war dogs (Mastiffs and Wolfhounds) covered in padded armor. These dogs were trained to hunt and disembowel native warriors, spreading profound psychological terror through Aztec ranks.</p>
+                    <p><strong>Animal Suits:</strong> While lacking real beasts of war, Aztec elite military orders literally embodied them. Jaguar Knights wore full pelts of actual jaguars, believing they channeled the predator's strength, while Eagle Knights wore feathered suits with open-beaked helmets. They used terrifying ceramic death whistles that produced a sound like a screaming human or a big cat roaring to unnerve enemies.</p>
+                    <p><strong>Logistics (The Tlamemeh):</strong> Because Mesoamerica had no beasts of burden, Aztec logistics relied entirely on human porters known as <em>Tlamemeh</em>. Each porter carried a load of 25-30 kg (often maize and dried beans) on their back using a tumpline strap across their forehead. This limited the range of an Aztec army to roughly 8-10 days march before they would literally eat through their own supply lines unless they could extract tribute from conquered cities.</p>
                 `
             },
             {
@@ -279,31 +435,305 @@
                 author: 'Marshal Ney',
                 thumbnail: svgAssets.napoleonic,
                 heroImage: svgAssets.napoleonic,
-                summary: 'The industrial slaughter of the 19th Century: Massed musket fire, the heavy cavalry charge, the obsolescence of shields, and the floating fortresses of the line.',
+                summary: 'The industrial slaughter of the 19th Century: Massed musket fire, artillery logistics, the corps system, and the tragic reliance on hundreds of thousands of war horses.',
                 fullText: `
-                    <p class="dropcap">The Napoleonic era witnessed warfare on a scale never before seen. The armies of Europe clashed in massive columns, choked by the thick white smoke of black powder. The age of individual heroism was eclipsed by mathematics, logistics, and the devastating science of artillery.</p>
-
-                    <h2>1. The End of the Shield: Earthworks and Bayonets</h2>
-                    <p>By the 1800s, the traditional shield was completely obsolete. A one-ounce lead ball fired from a musket could punch through steel plate, rendering personal armor useless (save for heavy cavalry breastplates). </p>
-                    <p>Instead of shields, armies relied on <strong>Earthworks and Sappers</strong>. Combat engineers dug massive trench systems and built gabions (wicker baskets filled with earth) to absorb cannon fire. On the open field, infantry protected themselves from cavalry charges by forming <strong>Infantry Squares</strong>—a tight, four-sided formation with a bristling hedge of bayonets that horses simply refused to charge into.</p>
-
-                    <h2>2. The Holy Trinity: Musket, Bayonet, Artillery</h2>
-                    <p>The standard infantry weapon was the smoothbore flintlock <strong>Musket</strong>. It was highly inaccurate beyond 75 yards. Therefore, tactics required men to stand shoulder-to-shoulder and fire in massive volleys to ensure a wall of lead hit the enemy lines.</p>
-                    <p>Once the enemy was softened, the devastating <strong>Bayonet charge</strong> followed. The psychological terror of thousands of men screaming and charging with 17-inch triangular blades often broke enemy lines before physical contact was even made.</p>
-                    <p>However, the true god of the battlefield was Artillery. Firing solid iron round shot, a single cannonball could bounce through an infantry column, severing limbs and killing dozens of men in a single strike.</p>
-
-                    <h2>3. The Final Glory of the Beast</h2>
-                    <p>Animals suffered horrific casualties in the gunpowder era, yet remained utterly indispensable.</p>
+                    <p class="dropcap">The Napoleonic era (1799–1815) witnessed warfare scaled up to a massive, industrial level. The armies of Europe clashed in columns of hundreds of thousands, choked by the thick, sulfurous white smoke of black powder. Napoleon's mastery of maneuver and artillery was perfected at the <strong>Battle of Austerlitz (1805)</strong> and finally crushed at <strong>Waterloo (1815)</strong>.</p>
+                    
+                    <h2>1. The Holy Trinity: Musket, Bayonet, Artillery</h2>
+                    <h3>The Smoothbore Musket</h3>
+                    <p>The standard infantry weapon was the smoothbore flintlock musket, such as the French <strong>Charleville (.69 caliber)</strong> or British <strong>Brown Bess (.75 caliber)</strong>. Because the round lead ball bounced down the unrifled barrel, accuracy was virtually non-existent beyond 75-100 yards. Therefore, tactics dictated that men stand shoulder-to-shoulder in massive lines (usually 3 ranks deep) to deliver concentrated, devastating volleys. A well-drilled soldier could bite the paper cartridge, pour the powder, ram the ball, and fire 3 times a minute.</p>
+                    
+                    <h3>The Bayonet</h3>
+                    <p>Once the enemy line was softened by volleys and artillery, the decisive blow was the <strong>Bayonet charge</strong>. Fixing a 16-inch triangular steel spike over the muzzle, infantry columns charged. The psychological terror of thousands of screaming men charging with cold steel usually caused the enemy line to break and run before actual physical contact was made.</p>
+                    
+                    <h2>2. The Gribeauval System and The Grand Battery</h2>
+                    <p>Napoleon, an artillery officer by trade, dominated battlefields using the <strong>Gribeauval System</strong>. This standardized cannon calibers (4, 8, and 12-pounders), making parts interchangeable and carriages lighter. Instead of dispersing cannons evenly, Napoleon massed them into a <em>Grand Battery</em>—dozens of guns firing concentrated solid iron round-shot that would bounce through enemy formations, literally bowling through lines of men, tearing off limbs. At close range, cannons fired <em>Canister shot</em> (tin cans filled with musket balls), turning the cannon into a giant shotgun.</p>
+                    
+                    <h2>3. Beasts of War & The Corps System</h2>
+                    <p><strong>The Cavalry (Cuirassiers & Hussars):</strong> The Napoleonic wars consumed horses on an unimaginable scale. Napoleon relied on heavy cavalry (Cuirassiers), massive men on massive horses wearing steel breastplates, to charge and smash infantry squares. Light cavalry (Hussars and Lancers) rode smaller, faster mounts, acting as scouts and using curved sabers to run down fleeing infantry.</p>
+                    <p><strong>Artillery Draft Horses:</strong> The true unsung beasts of this era were the draft horses pulling the cannons and baggage trains. A single 12-pounder cannon required six massive draft horses to pull it through the mud. The horrific attrition of these animals—over 150,000 horses died during Napoleon's invasion of Russia—ultimately crippled the French Empire, as they could no longer move their artillery fast enough to win battles.</p>
+                    <p><strong>Logistics (The Corps d'Armée):</strong> Napoleon revolutionized grand strategy by breaking his massive army into self-sufficient mini-armies called Corps (each with their own infantry, cavalry, and artillery). Instead of marching down one road and clogging supply lines, the Corps marched down parallel roads. This allowed them to move incredibly fast (living off the land via organized foraging) and then brilliantly converge on the enemy at the exact point of battle, outmaneuvering slower, traditional armies.</p>
+                `
+            },
+            {
+                id: 'macedonia-omnibus',
+                category: 'macedonia',
+                title: 'The Macedonian Phalanx: Sarissas, Companions, and Conquest',
+                author: 'Ptolemy I Soter',
+                thumbnail: svgAssets.macedonia,
+                heroImage: svgAssets.macedonia,
+                summary: 'The tactical revolution of Philip II and Alexander. A deep dive into the 6-meter Sarissa, the lethal wedge of the Companion Cavalry, and early encounters with Indian War Elephants.',
+                fullText: `
+                    <p class="dropcap">The armies of Macedon under Philip II and Alexander the Great completely revolutionized ancient warfare. They dismantled the traditional Greek hoplite system through a combination of extreme reach, integrated combined arms, and the devastating shock charges of their elite heavy cavalry, conquering the known world by 323 BC.</p>
+                    
+                    <h2>1. The Anvil: The Sarissa and the Syntagma</h2>
+                    <h3>The Sarissa Pike</h3>
+                    <p>The core of the Macedonian infantry (the Pezhetairoi or "Foot Companions") was defined by a single weapon: the <strong>Sarissa</strong>. This immense pike was 4 to 6 meters (13 to 20 feet) long, crafted from resilient cornel wood. Because of its extreme length, it had to be wielded with both hands. It featured a heavy iron leaf-shaped blade and a heavy bronze butt-spike (sauroter) to counter-balance the weapon and plant it in the ground against cavalry charges.</p>
+                    <p>In a <em>Syntagma</em> (a massive block of 256 men, 16 ranks deep), the first five ranks leveled their sarissas forward. This created an impenetrable wall of five spearpoints for every single enemy soldier charging the front line. The rear ranks held their pikes at a 45-degree angle to deflect incoming arrows.</p>
+                    
+                    <h3>The Kopis</h3>
+                    <p>Because their hands were full, the Pezhetairoi carried a smaller shield (the telamon) slung over their shoulder. For close quarters, if the sarissa snapped, they drew the <strong>Kopis</strong>. Unlike the straight Greek Xiphos, the Kopis was a heavy, forward-curving, single-edged sword optimized for brutal hacking and cleaving—acting more like an axe than a delicate fencing weapon.</p>
+                    
+                    <h2>2. The Hammer: The Companion Cavalry (Hetairoi)</h2>
+                    <p>Alexander’s decisive tactical stroke was the "Hammer and Anvil." While the phalanx pinned the enemy (the Anvil), the <strong>Companion Cavalry</strong> struck the flanks (the Hammer). The Companions rode in a wedge formation, allowing them to rapidly pierce enemy lines. They wielded the <strong>Xyston</strong>, a 3-meter long cornel wood lance with blades on both ends. Since stirrups had not yet been invented, a rider had to grip the horse fiercely with his thighs to avoid being unseated by the impact of his own lance thrust.</p>
+                    
+                    <h2>3. Beasts of War & Siege Engineering</h2>
+                    <p><strong>Bucephalus and Thessalian Horses:</strong> The Macedonian nobility rode powerful Thessalian horses, renowned for their courage and size in the ancient world. Alexander's own horse, Bucephalus, was famously wild and afraid of his own shadow until Alexander tamed him. These horses were the driving force of the Companion Cavalry's wedge charges.</p>
+                    <p><strong>Clashing with Elephants:</strong> During Alexander's invasion of India at the Battle of the Hydaspes (326 BC), the Macedonians faced King Porus's massive Indian War Elephants. The horses of the Companion Cavalry were terrified of the elephants' smell and trumpet blasts. Alexander countered by ordering his light infantry to target the mahouts (riders) and the elephants' eyes with javelins, causing the maddened beasts to stampede back through the Indian lines.</p>
+                    <p><strong>Siege Warfare (Tyre):</strong> The Macedonians utilized the world's first massive siege engineering division. During the Siege of Tyre (332 BC), an island fortress, Alexander commanded the construction of a massive earthen mole (causeway) across the sea. He utilized immense, multi-story siege towers covered in raw hides (to resist fire arrows) and deployed highly advanced torsion-powered ballistae (stone throwers powered by twisted animal sinew) to batter down the walls from aboard modified ships.</p>
+                `
+            },
+            {
+                id: 'carthage-omnibus',
+                category: 'carthage',
+                title: 'Masters of the Mediterranean: War Elephants and Mercenaries',
+                author: 'General Hannibal Barca',
+                thumbnail: svgAssets.carthage,
+                heroImage: svgAssets.carthage,
+                summary: 'The Punic war machine. Exploring the tactical terror of African Forest Elephants, the bone-breaking Iberian Falcata, and the lethality of Balearic Slingers.',
+                fullText: `
+                    <p class="dropcap">Carthage was an empire built on naval supremacy, vast wealth, and a brilliant, highly diverse mercenary military structure. Under commanders like Hannibal Barca, they inflicted the greatest defeats in Roman history, utilizing complex ambushes and exploiting the specialized weapons of subject nations.</p>
+                    
+                    <h2>1. Weapons of the Subject Nations: Falcata and Sling</h2>
+                    <h3>The Iberian Falcata</h3>
+                    <p>Carthage hired tens of thousands of Iberian (Spanish) mercenaries. Their signature weapon was the terrifying <strong>Falcata</strong>. Measuring roughly 60 cm (24 in), this iron sword had an inward-curving blade that swelled near the tip, placing the center of mass far forward. It combined the chopping power of an axe with the cutting edge of a sword. Roman sources noted with horror that the Falcata could cleave through a bronze helmet or sever a limb in a single stroke, prompting the Roman military to hastily redesign their own armor.</p>
+                    
+                    <h3>The Balearic Slinger</h3>
+                    <p>Before battle lines clashed, the Carthaginian vanguard relied on the <strong>Balearic Slingers</strong>. Trained from childhood (legend says they had to shoot their bread off a post to eat), these men wielded three different lengths of esparto-grass slings for different ranges. They hurled lead bullets (glandes) or 1-pound stones. The centrifugal force generated by a master slinger allowed the projectile to reach speeds over 100 mph (160 km/h)—capable of shattering a man's skull through a bronze helmet or snapping the bones in an arm held up in defense.</p>
+                    
+                    <h2>2. Tactical Brilliance: The Double Envelopment</h2>
+                    <p><strong>The Double Envelopment (Cannae):</strong> At the Battle of Cannae (216 BC), Hannibal deployed a crescent-shaped infantry line with his weakest Gauls in the center and his elite heavy African infantry on the flanks. As the Romans pushed the center back, the line inverted into a U-shape. The African infantry then pivoted inward, and the Carthaginian heavy cavalry (having routed the Roman horse) charged the Roman rear, completely surrounding and slaughtering 50,000 Romans in a single afternoon.</p>
+                    
+                    <h2>3. Beasts of War & Naval Fleets</h2>
+                    <p><strong>African Forest Elephants:</strong> The psychological terror of the Carthaginian army was the War Elephant. Carthage utilized the now-extinct North African Forest Elephant. Smaller than Indian elephants (standing roughly 2.5 meters at the shoulder), they generally did not carry wooden turrets (howdahs). Instead, they were ridden by a single mahout armed with a mallet and chisel (to drive into the elephant's spine if it panicked and turned on its own men). They were living shock-weapons used to terrify cavalry (horses naturally panicked at the scent) and trample dense infantry formations.</p>
+                    <p><strong>Numidian Light Cavalry:</strong> Carthage's greatest flanking asset was the Numidian horsemen from North Africa. They rode small, agile desert horses completely without saddles or bridles, guiding the animals merely with a rope around the neck and a riding crop. They were masters of hit-and-run skirmishing, hurling javelins and retreating before heavy Roman cavalry could catch them.</p>
+                    <p><strong>The Quinquereme:</strong> Carthage’s logistical and imperial backbone was the <em>Quinquereme</em>. This massive warship had three banks of oars, manned by five rowers per vertical section. Built using an early form of mass-production (parts were stamped with letters for rapid assembly), they were designed to ram enemy vessels at high speeds, shattering their hulls with a massive bronze beak.</p>
+                `
+            },
+            {
+                id: 'han-omnibus',
+                category: 'han',
+                title: 'The Han Dynasty: Iron Dragons and the Crossbow Revolution',
+                author: 'General Wei Qing',
+                thumbnail: svgAssets.han,
+                heroImage: svgAssets.han,
+                summary: 'The industrial warfare of Ancient China. A detailed analysis of mass-produced iron weapons, the repeating Chu-Ko-Nu, and the "Heavenly Horses" of the Fergana valley.',
+                fullText: `
+                    <p class="dropcap">The Han Dynasty (206 BC – 220 AD) fielded an army that dwarfed its contemporaries through state-sponsored industrialization. Mastering iron metallurgy centuries before Europe, the Han mass-produced devastating missile weapons and heavy armor to wage total war against the nomadic Xiongnu confederacy.</p>
+                    
+                    <h2>1. The Crossbow Revolution: The Ji and the Dao</h2>
+                    <h3>The Han Crossbow</h3>
+                    <p>The defining weapon of the Han military was the <strong>Bronze-triggered Crossbow (Nǔ)</strong>. Han engineers perfected a complex, mass-produced bronze trigger mechanism with interlocking sears that could hold massive tension (often requiring the soldier to lie on his back and use his legs to draw the bowstring). This allowed for incredibly heavy draw weights. Unlike a traditional bow, a soldier could hold the crossbow drawn for minutes, aiming patiently. Massed ranks of Han crossbowmen used the "volley fire" technique, rotating ranks to maintain a continuous, armor-piercing hail of bolts to destroy nomadic horse archers before they could close.</p>
+                    <p>Later variants included the early <strong>Chu-Ko-Nu (Repeating Crossbow)</strong>, which sacrificed penetrating power for volume, using a top-mounted magazine to fire 10 poisoned bolts in 15 seconds.</p>
+                    
+                    <h3>The Ji (Halberd) and Dao (Saber)</h3>
+                    <p>The primary infantry polearm was the <strong>Ji</strong>, a hybrid weapon combining a spear point for thrusting and a side-mounted crescent blade for hooking and pulling cavalrymen off their horses. As metallurgy advanced, the aristocratic double-edged straight sword (Jian) was largely replaced on the battlefield by the <strong>Dao</strong>—a heavy, single-edged iron ring-pommel saber. The Dao was cheaper to produce, incredibly durable, and optimized for brutal cavalry slashing.</p>
+                    
+                    <h2>2. Iron Scale Armor and Mass Infantry</h2>
+                    <p>Han heavy infantry were equipped with highly advanced <strong>Iron Scale Armor</strong>. Thousands of small, overlapping rectangular iron plates (lamellae) were laced together with silk or leather cords. This armor was incredibly flexible, allowing full range of motion while providing excellent defense against slashing weapons and arrows.</p>
+                    
+                    <h2>3. Beasts of War & Grand Logistics</h2>
+                    <p><strong>The Heavenly Horses (Akhal-Teke):</strong> Early Han emperors suffered terrible defeats because their native Chinese ponies were too slow and weak to match the Xiongnu nomads. Emperor Wu launched the massive "War of the Heavenly Horses" purely to secure the Fergana horse breed (ancestors of the modern Akhal-Teke) from Central Asia. These large, fast horses "sweated blood" (due to a skin parasite) and allowed the Han to build massive units of heavy, armored shock cavalry to physically ride down the nomads.</p>
+                    <p><strong>Wheelbarrows and Oxen:</strong> Moving millions of tons of grain to the northern frontier was achieved through massive state engineering projects, including extended canal systems. The Han logistical train utilized oxen and specialized "wheelbarrows" (sometimes fitted with small sails to catch the wind) which allowed a single man to transport triple the weight of a standard pack animal over rough terrain.</p>
+                    <p><strong>Fortifications (The Great Wall):</strong> The Han vastly expanded the stamped-earth ramparts of the Great Wall. This was not merely a physical barrier, but an early warning communication network. Garrison towers spaced at visual intervals used smoke signals by day and fire beacons by night to transmit the size and location of Xiongnu raiding parties hundreds of miles back to the capital in a matter of hours.</p>
+                `
+            },
+            {
+                id: 'assyria-omnibus',
+                category: 'assyria',
+                title: 'The Assyrian War Machine: Iron, Siege Engines, and Terror',
+                author: 'King Ashurbanipal',
+                thumbnail: svgAssets.assyria,
+                heroImage: svgAssets.assyria,
+                summary: 'The brutal founders of standing armies. Exploring the transition to iron weaponry, massive siege towers, chariot shock tactics, and the use of Assyrian Mastiffs.',
+                fullText: `
+                    <p class="dropcap">The Neo-Assyrian Empire (911–609 BC) is often credited with creating the world's first true professional standing army. Driven by a culture that demanded constant expansion to appease the god Ashur, they built an unstoppable, highly organized war machine heavily reliant on advanced iron metallurgy and sheer psychological terror.</p>
+                    
+                    <h2>1. The Iron Revolution and Combined Arms</h2>
+                    <h3>Iron Swords and Spears</h3>
+                    <p>The Assyrians were among the first to fully equip vast armies with <strong>Iron Weaponry</strong> on an industrial scale. While early iron was not necessarily sharper than good bronze, it was far more abundant. Assyrian blacksmiths churned out thousands of straight, double-edged iron swords and iron-tipped spears. This allowed the state to field much larger armies than their bronze-wielding neighbors.</p>
+                    
+                    <h3>Heavy Chariots</h3>
+                    <p>The Assyrian <strong>Heavy War Chariot</strong> was a massive vehicle compared to the light Egyptian variants. Pulled by up to four horses, it carried a crew of three or four men (a driver, an archer wielding a composite bow, and one or two shield-bearers). Its heavy, multi-spoked wheels were designed to crash directly into enemy infantry lines.</p>
+                    
+                    <h2>2. Masters of the Siege: Battering Rams and Sappers</h2>
+                    <p>The Assyrian mastery of <strong>Siege Warfare</strong> was unprecedented. Cities in the ancient Near East relied on massive mud-brick walls. The Assyrians countered this by deploying sophisticated <strong>Siege Towers and Battering Rams</strong>.</p>
+                    <p>Their rams were massive, armored wooden vehicles covered in wet animal hides to prevent them from catching fire. Inside, a heavy timber shaft tipped with an iron blade (often shaped like a spear or axe) was swung back and forth on chains. Rather than just smashing gates, these iron tips were used to literally pry apart the mud-brick matrix of city walls. Meanwhile, Assyrian sappers (engineers) relentlessly tunneled beneath the walls to collapse their foundations, while archers provided covering fire from tall wicker shields (spara).</p>
+                    
+                    <h2>3. Beasts of War & Psychological Terror</h2>
+                    <p><strong>The First True Cavalry:</strong> The Assyrians were the pioneers of true horseback cavalry. Early on, they rode in pairs (one man holding the reins for both horses while the other fired a bow), but they eventually developed specialized horse breeds and saddles, evolving into independent mounted archers and lancers, slowly replacing the chariot. The state ran massive horse-breeding farms (muskannu) to maintain the supply.</p>
+                    <p><strong>Assyrian Mastiffs:</strong> The Assyrian kings kept massive, heavily muscled war dogs. Depicted frequently in royal reliefs, these dogs were used for the prestigious royal lion hunts, but were also brought on military campaigns to hunt down fleeing enemies, guard the baggage trains, and terrorize captive populations.</p>
+                    <p><strong>Psychological Warfare:</strong> The Assyrians utilized calculated, horrific terror as a primary weapon of war. When a city resisted a siege and was finally breached, the Assyrians systematically flayed the rebel leaders alive and pinned their skins to the city walls. They impaled thousands on stakes and constructed massive pyramids of severed heads. This was not blind rage, but state policy: to ensure that the next city would surrender instantly upon hearing the Assyrian army was approaching.</p>
+                `
+            },
+            {
+                id: 'byzantine-omnibus',
+                category: 'byzantine',
+                title: 'The Byzantine Cataphract: Greek Fire and the Dromon',
+                author: 'Emperor Maurice',
+                thumbnail: svgAssets.byzantine,
+                heroImage: svgAssets.byzantine,
+                summary: 'The surviving Roman East. A tactical breakdown of the fully-armored Cataphract, the Paramérion saber, Greek Fire, and heavily barded war horses.',
+                fullText: `
+                    <p class="dropcap">While the Western Roman Empire fell, the Eastern Roman (Byzantine) Empire survived for another thousand years. Surrounded by Sassanid Persians, Islamic Caliphates, and migrating steppe nomads, the Byzantine military evolved from traditional infantry legions into a highly mobile, tactically complex force centered on elite heavy cavalry.</p>
+                    
+                    <h2>1. The Ultimate Cavalryman: The Cataphract (Kataphraktos)</h2>
+                    <h3>The Kontos and the Paramérion</h3>
+                    <p>The core of Byzantine power was the <strong>Cataphract</strong>, a super-heavy cavalryman completely encased in armor. Their primary shock weapon was the <strong>Kontos</strong>, a massive wooden lance roughly 4 meters (13 ft) long, wielded with two hands. The sheer kinetic energy of a tightly packed formation of Cataphracts charging with leveled kontoi could shatter any infantry line.</p>
+                    <p>For close-quarters melee, the Cataphract relied on the <strong>Paramérion</strong>. Abandoning the straight Roman gladius, the paramérion was a curved, single-edged saber heavily influenced by steppe nomad (Avar and Khazar) weapons. The curve allowed for devastating drawing cuts from horseback. They also carried the <em>Menaulion</em>, a thick, heavy spear used by specialized infantry to break enemy cavalry charges.</p>
+                    
+                    <h3>Klibanion Armor</h3>
+                    <p>The Cataphract wore layers of protection. Over a padded gambeson, they wore the <strong>Klibanion</strong>, a lamellar cuirass made of hundreds of interlocking iron or bronze plates. Over this, they often wore an <em>Epilorikion</em> (a thick padded surcoat) to deflect arrows and sun heat.</p>
+                    
+                    <h2>2. The Secret Weapon: Greek Fire and Naval Warfare</h2>
+                    <p><strong>Greek Fire (Liquid Fire):</strong> The Byzantines possessed the most guarded military secret of the Middle Ages: Greek Fire. It was an incendiary liquid (likely a mixture containing naphtha, quicklime, and sulfur) that burned fiercely on water and could not be extinguished with water. </p>
+                    <p>It was deployed via a <strong>Siphono-phoros</strong>, a highly pressurized bronze pump and tube system. The Byzantines mounted these projectors on the bows of their ships, creating literal flamethrowers that projected a roaring jet of liquid flame up to 15 meters, completely incinerating massive Arab fleets during the Sieges of Constantinople.</p>
+                    
+                    <h2>3. Beasts of War & Defense in Depth</h2>
+                    <p><strong>Armored Horses (Barding):</strong> A Cataphract was only as strong as his mount. Byzantine war horses were heavily barded (armored) with felt, boiled leather, or horn lamellae that draped down to their knees, making the rider and mount a virtual medieval tank. The horses were specially bred for weight-carrying capacity rather than pure speed.</p>
+                    <p><strong>Camels vs Nomads:</strong> On the eastern frontiers fighting Arab and Persian forces, the Byzantines frequently employed camels for logistics and occasionally in combat to disrupt enemy cavalry, as horses unfamiliar with camels will panic at their scent.</p>
+                    <p><strong>Grand Strategy (The Strategikon):</strong> Unlike Western Europe, the Byzantines approached war scientifically. Emperors authored manuals like the <em>Strategikon</em>, which detailed specific, pragmatic tactics tailored to defeat specific enemies. The empire relied on the <em>Theme System</em>, where local peasant-soldiers held land in exchange for military service, retreating to castles during invasions and using guerrilla tactics while the central army (Tagmata) mobilized.</p>
+                `
+            },
+            {
+                id: 'ottoman-omnibus',
+                category: 'ottoman',
+                title: 'The Ottoman Cannon: Janissaries and the Fall of Walls',
+                author: 'Sultan Mehmed II',
+                thumbnail: svgAssets.ottoman,
+                heroImage: svgAssets.ottoman,
+                summary: 'The gunpowder empire that broke Constantinople. Analyzing the super-massive Dardanelles Gun, Janissary musketry, the deadly Yataghan sword, and massive ox-train logistics.',
+                fullText: `
+                    <p class="dropcap">The Ottoman Empire bridged the medieval and early modern eras by becoming the first state to fully embrace and integrate gunpowder artillery and standing infantry armed with firearms. Their terrifying logistical capacity and embrace of new technology culminated in the epoch-defining <strong>Fall of Constantinople (1453)</strong>.</p>
+                    
+                    <h2>1. The Gunpowder Revolution: Bombards and Matchlocks</h2>
+                    <h3>The Great Turkish Bombard (Dardanelles Gun)</h3>
+                    <p>The Ottomans revolutionized siege warfare with extreme-caliber artillery. Under the supervision of the Hungarian engineer Orban, they cast massive bronze bombards. The most famous was a monster over 5 meters (17 ft) long, weighing 16 tons. It fired solid marble and granite cannonballs that weighed up to 600 kg (1,300 lbs) over a mile. The recoil was so massive it required massive wooden shock absorbers, and it took three hours to reload. However, a single direct hit from this stone sphere would instantly vaporize sections of the Theodosian Walls, which had stood impregnable for a thousand years.</p>
+                    
+                    <h3>Janissaries and the Matchlock</h3>
+                    <p>The core of the Ottoman infantry was the <strong>Janissaries</strong>, an elite standing corps of slave-soldiers drafted as boys (the Devshirme system) and fanatically trained. They were among the first professional units in the world to be entirely equipped with firearms. They utilized heavy <strong>Matchlock Muskets</strong>—smoothbore guns fired by lowering a smoldering piece of hemp rope into a flashpan of powder. While slow to load, a disciplined Janissary volley could shatter heavy European cavalry charges before they reached the lines.</p>
+                    
+                    <h2>2. The Arsenal of the Sultan: Yataghan and Composite Bow</h2>
+                    <p>For close quarters combat, the Janissaries carried the <strong>Yataghan</strong>. This unique short sword had a forward-curving, single-edged blade, but crucially, it lacked a traditional crossguard. The hilt flared out into "ears" made of bone or ivory to keep the hand secure. The forward curve gave it immense hacking power, similar to the ancient falcata, making it a devastating weapon in the brutal trench warfare of a siege.</p>
+                    <p>Despite the adoption of firearms, the Ottomans maintained the <strong>Turkish Composite Bow</strong>. In the hands of Ottoman Sipahi (heavy cavalry), it was used to lay down a rapid, plunging suppression fire that muskets of the era simply could not match in rate of fire.</p>
+                    
+                    <h2>3. Beasts of War & Psychological Warfare</h2>
+                    <p><strong>Turkoman Horses and Akindji:</strong> The Ottoman Sipahi rode magnificent Arabian and Turkoman horses, prized for their speed, intelligence, and stamina. Ahead of the main army rode the <em>Akindji</em>, irregular light cavalry who used their fast horses to raid deep into enemy territory, burning crops and spreading terror days before the main Ottoman force arrived.</p>
+                    <p><strong>Massive Ox-Trains:</strong> The true logistical miracle of the Ottoman army was their beast-of-burden network. Moving a 16-ton bronze bombard required a train of 60 to 100 oxen, accompanied by 200 men who marched ahead to physically pave roads and build wooden bridges just to support the weight of the cannon.</p>
+                    <p><strong>Psychological Warfare (The Mehter):</strong> The Ottomans were the first to utilize a professional, centralized military band—the <em>Mehter</em>. Utilizing massive kettle drums (kös) carried by camels, crashing cymbals, and shrill zurna (oboes), they created a deafening, rhythmic wall of sound. Played constantly during a siege, it synchronized the marching of the troops while inducing sheer psychological dread in the defenders.</p>
+                `
+            },
+            {
+                id: 'mughal-omnibus',
+                category: 'mughal',
+                title: 'The Mughal War Machine: Wootz Steel and War Elephants',
+                author: 'Emperor Akbar',
+                thumbnail: svgAssets.mughal,
+                heroImage: svgAssets.mughal,
+                summary: 'The gunpowder lords of India. A deep dive into the metallurgy of Wootz steel (Damascus), heavy matchlock Jezails, and the terrifying deployment of armored War Elephants and camels.',
+                fullText: `
+                    <p class="dropcap">The Mughal Empire (1526–1857) conquered the Indian subcontinent by fusing Central Asian nomadic mobility with Indian heavy armor and cutting-edge gunpowder technology. Starting with Babur's stunning victory at the <strong>First Battle of Panipat (1526)</strong>, the Mughals redefined warfare in South Asia.</p>
+                    
+                    <h2>1. The Metallurgy of the Gods: Wootz Steel and the Tulwar</h2>
+                    <h3>Wootz Steel (Damascus)</h3>
+                    <p>The crown jewel of Mughal weaponry was the metallurgy of <strong>Wootz Steel</strong> (often erroneously called Damascus steel in the West). Indian smiths placed wrought iron, charcoal, and glass in a sealed crucible and heated it for days. The resulting steel ingots possessed an ultra-high carbon content (1.5%) with a micro-structure of hard cementite wires embedded in a softer steel matrix. When forged and acid-etched, it revealed a beautiful, flowing water-like pattern. More importantly, it created a blade of unimaginable sharpness that retained its edge through heavy combat without shattering.</p>
+                    
+                    <h3>The Tulwar</h3>
+                    <p>This steel was primarily forged into the <strong>Tulwar</strong>. This heavily curved saber was the standard sidearm of Mughal cavalry and infantry. It featured a distinct hilt with a thick, disc-shaped pommel that locked the wrist in place. This forced the warrior to rely on the motion of the shoulder and arm to deliver massive, sweeping drawing cuts, capable of slicing cleanly through thick quilted armor and flesh.</p>
+                    
+                    <h2>2. Gunpowder: The Jezail and the Matchlock</h2>
+                    <p>The Mughal infantry utilized the <strong>Jezail</strong>, a heavy, long-barreled matchlock (and later flintlock) musket. Firing a massive caliber lead ball, the unusually long barrel (often over 1.5 meters) allowed all the black powder to burn completely before the ball exited, giving the weapon extreme range and kinetic force, capable of punching through heavy Indian chainmail at significant distances.</p>
+                    
+                    <h2>3. Beasts of War: Elephants, Camels, and Horses</h2>
+                    <p><strong>Armored War Elephants:</strong> Unlike the Carthaginians, the Mughals heavily armored the massive Indian elephant. Elephants were draped in <em>Pakhar</em>, massive coats of heavy steel scale armor that covered their heads, trunks, and flanks, making them virtually immune to arrows and early musket fire. Heavy iron chains or poison-tipped swords were sometimes strapped to their tusks. They carried a <em>Howdah</em> (a fortified wooden or iron turret) on their back, seating the commander and elite matchlock musketeers. Male elephants were often given wine and kept in a state of <em>Musth</em> (heightened testosterone) to make them hyper-aggressive in battle.</p>
+                    <p><strong>The Zamburak Camel Artillery:</strong> For mobile artillery, the Mughals perfected the <strong>Zamburak</strong>. This was a heavy, large-caliber swivel gun (a miniature cannon) mounted on a wooden saddle on the back of a camel. The camel would kneel, effectively acting as an organic tripod. This allowed the Mughals to deploy devastating, fast-moving artillery batteries across the rough terrain of the Deccan plateau where heavy wheeled cannons could not travel.</p>
+                    <p><strong>Marwari Horses:</strong> The Mughal heavy cavalry rode beautiful, inward-eared Marwari horses, draped in chainmail barding, allowing them to charge headlong into enemy musket fire with relative impunity.</p>
+                `
+            },
+            {
+                id: 'inca-omnibus',
+                category: 'inca',
+                title: 'Lords of the Andes: Bronze Maces and Mountain Logistics',
+                author: 'Sapa Inca Pachacuti',
+                thumbnail: svgAssets.inca,
+                heroImage: svgAssets.inca,
+                summary: 'The empire of the mountains. An analysis of the devastating star-headed Macana, the Estolica dart thrower, and the miracle of Andean logistics using Llama caravans.',
+                fullText: `
+                    <p class="dropcap">The Inca Empire (Tawantinsuyu) conquered the brutal, vertical terrain of the Andes mountains without the wheel, iron, or horses. Their military supremacy relied on highly disciplined levy armies, devastating blunt-force weaponry, and an unparalleled logistical network that spanned 25,000 miles of mountain roads.</p>
+                    
+                    <h2>1. The Arsenal of Stone and Bronze: Macana and Boleadoras</h2>
+                    <h3>The Macana (Star-Mace)</h3>
+                    <p>In a world where warriors wore thick, quilted cotton armor (which easily caught slashing obsidian), the Inca relied heavily on crushing blunt-force trauma. The primary weapon of the shock infantry was the <strong>Macana</strong>. This was a heavy wooden shaft topped with a spherical or star-shaped head crafted from stone, copper, or—for the elite—hardened bronze. The multi-pointed star design concentrated the kinetic energy of the swing into a tiny surface area, allowing a warrior to easily crush a man's skull or shatter a collarbone right through his armor.</p>
+                    
+                    <h3>The Estolica and Boleadoras</h3>
+                    <p>Before the melee clash, Inca skirmishers rained death from afar. They utilized the <strong>Estolica</strong> (the Andean atlatl/spear-thrower) to hurl copper-tipped darts with immense velocity. Even more unique was the use of <strong>Boleadoras (Bolas)</strong>. These were three heavy stones wrapped in leather and tied to interconnected cords. Swung overhead and released, the centrifugal force caused the stones to spread out. When they struck an enemy warrior, the cords would instantly wrap around their legs, snapping bones and sending the victim crashing to the ground, helpless.</p>
+                    <p>The most feared ranged weapon was the simple <strong>Sling (Huaraca)</strong>. Woven from llama wool, an Inca slinger could hurl a heavy stone with the kinetic force of an early pistol bullet, capable of cracking Spanish steel helmets and killing horses outright.</p>
+                    
+                    <h2>2. Armor and Defensive Tactics</h2>
+                    <p>Inca warriors wore tunics of densely quilted cotton, and carried heavy wooden shields covered in deer hide. Elite units wore helmets fashioned from woven cane or carved wood, decorated with copper plates and the bright feathers of jungle birds. While ineffective against Spanish firearms, this armor was perfectly adapted to deflect the slings and bronze maces of their South American rivals.</p>
+                    
+                    <h2>3. Beasts of Burden & Mountain Logistics</h2>
+                    <p><strong>Llamas and Alpacas:</strong> Unlike the Aztecs who had no pack animals, the Inca relied entirely on the Llama. Llamas are not strong enough to be ridden by adult men in combat, but they are exceptional beasts of burden in high altitudes. The Inca army was accompanied by massive caravans of thousands of llamas carrying extra weaponry, maize, and freeze-dried potatoes (chuño). The animals themselves also served as a walking food source (ch'arki/jerky) for the troops.</p>
+                    <p><strong>The Shock of Spanish Horses:</strong> Because the Inca had never seen an animal large enough to ride, the arrival of Spanish cavalry under Pizarro was utterly devastating. The psychological shock of armored warhorses charging through their lines, combined with the extreme height advantage it gave Spanish swordsmen, broke Inca formations that outnumbered the Spanish ten to one.</p>
+                    <p><strong>The Qollqa System:</strong> The true secret to the Inca war machine was their logistics. Spaced exactly a day's march apart along their 25,000-mile paved road network were the <em>Qollqas</em>—massive state-run stone storehouses. This allowed an Inca army of tens of thousands of men to march at breakneck speed across freezing mountain passes without carrying a baggage train, simply drawing fresh supplies from the qollqas as they moved.</p>
+                `
+            },
+            {
+                id: 'zulu-omnibus',
+                category: 'zulu',
+                title: 'The Horns of the Buffalo: The Iklwa and the Zulu Impi',
+                author: 'King Shaka Zulu',
+                thumbnail: svgAssets.zulu,
+                heroImage: svgAssets.zulu,
+                summary: 'The apex of African infantry tactics. Exploring Shaka Zulu\'s revolution: the short stabbing Iklwa, the Ishlangu shield, and the crushing Bull Horn formation powered by cattle logistics.',
+                fullText: `
+                    <p class="dropcap">In the early 19th century, King Shaka transformed the Zulu people from a small tribe into a militarized empire. By completely overhauling traditional African warfare—replacing skirmishing with hyper-aggressive, close-quarters annihilation tactics—the Zulu Impi became a force capable of wiping out modern British columns, as seen at the <strong>Battle of Isandlwana (1879)</strong>.</p>
+                    
+                    <h2>1. Shaka's Weaponry Revolution: The Iklwa and Ishlangu</h2>
+                    <h3>The Iklwa (Stabbing Spear)</h3>
+                    <p>Before Shaka, local warfare involved warriors standing at a distance and throwing light javelins (assegais), resulting in few casualties. Shaka deemed this cowardly. He introduced the <strong>Iklwa</strong>, a short spear with a massive, 25 cm (10 in) broad iron blade and a stout wooden shaft. It was not meant to be thrown. It was a dedicated, close-quarters stabbing weapon, used with an underhand thrust to the enemy's abdomen. Its name is reportedly onomatopoeic, mimicking the sucking sound the blade made as it was pulled from a victim's flesh.</p>
+                    
+                    <h3>The Ishlangu (Cowhide Shield)</h3>
+                    <p>The Iklwa was paired with the <strong>Ishlangu</strong>, a massive, oval shield made of hardened ox hide stretched over a central wooden spine. Standing roughly 1.3 meters tall, it covered the warrior from chin to ankle. The genius of the Zulu martial art lay in the shield’s offensive use. A Zulu warrior would charge, hook the left edge of his Ishlangu behind the enemy's shield, and violently wrench it to the right. This instantly spun the enemy around, exposing their unprotected left flank for a fatal thrust from the Iklwa.</p>
+                    
+                    <h2>2. Tactical Annihilation: The Bull Horn Formation</h2>
+                    <p>The Zulu army (the Impi) abandoned chaotic skirmishing for a highly disciplined, multi-stage tactical maneuver designed for total encirclement and annihilation, known as the <strong>Horns of the Buffalo (Impondo Zankomo)</strong>.</p>
                     <ul>
-                        <li><strong>The Heavy Cavalry (Cuirassiers):</strong> Mounted on massive warhorses, armored in steel breastplates, these men were the shock troops of the Emperor. Their purpose was to exploit weaknesses in the enemy line, charging at a full gallop to shatter infantry formations through sheer momentum and flashing sabers.</li>
-                        <li><strong>Artillery Draught Horses:</strong> An army cannot move without its guns. Thousands of horses were required to drag cannons through the mud of Europe. If the horses died, the artillery was lost, and the battle was forfeited.</li>
-                        <li><strong>War Dogs (Regimental Mascots & Guards):</strong> While no longer used as direct shock troops against musket fire, dogs served vital roles. Regiments kept massive hounds to guard supply wagons from partisans, and famously used specialized dogs to locate wounded soldiers on the battlefield at night amidst the piles of corpses.</li>
-                        <li><strong>Elephants (In India):</strong> While Napoleon fought in Europe, British and French colonial forces in India faced and utilized war elephants for heavy logistical transport and occasionally to terrify local unseasoned troops, though artillery made them highly vulnerable targets.</li>
+                        <li><strong>The Chest (Isifuba):</strong> The most veteran and heavily armed warriors. They charged directly into the center of the enemy line to pin them in brutal hand-to-hand combat.</li>
+                        <li><strong>The Horns (Izimpondo):</strong> Fast, athletic, younger warriors deployed on the extreme flanks. They sprinted in a massive flanking arc to completely encircle the enemy, linking up at the rear to prevent any escape.</li>
+                        <li><strong>The Loins (Umuva):</strong> A massive reserve of veterans who sat with their backs to the battle. The commander would commit them to reinforce the Chest or exploit a breakthrough.</li>
                     </ul>
-
-                    <h2>4. Floating Fortresses: The Ship of the Line</h2>
-                    <p>At sea, combat was apocalyptic. The primary vessel was the <strong>Ship of the Line</strong>, carrying anywhere from 74 to 120 heavy cannons. </p>
-                    <p>These majestic wooden behemoths fought by sailing in parallel lines and unleashing <em>broadsides</em>—firing dozens of cannons simultaneously. They fired solid shot to smash hulls, chain-shot to tear down masts and sails, and grapeshot (bags of small iron balls) to clear enemy decks of human life in a storm of shrapnel before a boarding party was sent across with cutlasses and pistols.</p>
+                    
+                    <h2>3. Beasts of War & Barefoot Logistics</h2>
+                    <p><strong>Nguni Cattle:</strong> The Zulu economy, culture, and military logistics revolved entirely around Nguni cattle. The shield colors of the Ishlangu were matched to the hides of specific herds, designating the regiment (e.g., black shields for veterans, white for rookies). On campaign, the Zulu drove massive herds of cattle with them. They provided milk and fresh meat on the march, and in desperate combat situations, the Zulus would stampede the cattle directly into enemy lines to act as a living, crushing shield against musket fire.</p>
+                    <p><strong>Barefoot Mobility:</strong> Shaka famously discarded leather sandals, forcing his warriors to march barefoot over thorns and hot rocks until the soles of their feet became thick callouses. This drastically increased the army's mobility. An Impi could run up to 50 miles in a single day and fight a massive battle at the end of it.</p>
+                `
+            },
+            {
+                id: 'celtic-omnibus',
+                category: 'celtic',
+                title: 'Fury of the Gauls: Longswords, Chariots, and Chainmail',
+                author: 'Vercingetorix',
+                thumbnail: svgAssets.celtic,
+                heroImage: svgAssets.celtic,
+                summary: 'The terrifying warriors of Iron Age Europe. Analyzing the invention of chainmail, the metallurgical brilliance of the Celtic Longsword, chariot tactics, and massive war hounds.',
+                fullText: `
+                    <p class="dropcap">The Celtic and Gallic tribes of Iron Age Europe were terrifying adversaries who famously sacked Rome in 390 BC and pushed Julius Caesar to the brink of destruction. Far from uncultured barbarians, they were master metallurgists who invented revolutionary armor and wielded fearsome iron longswords that defined European warfare for centuries.</p>
+                    
+                    <h2>1. Master Metallurgists: The Longsword and Chainmail</h2>
+                    <h3>The Celtic Iron Longsword</h3>
+                    <p>While the Romans favored the short stabbing gladius, the Celtic elite utilized the <strong>Iron Longsword</strong>. Measuring 75 to 90 cm in length, these weapons were masterworks of early iron forging. The blades were relatively thin and flexible, often with rounded points, because they were designed almost exclusively for devastating, overhead downward slashes. Swung with immense force by a tall Gallic warrior, these swords could cleave right through early bronze helmets. Because early iron could sometimes bend under massive impact, warriors were occasionally forced to step on their swords mid-battle to straighten them out.</p>
+                    
+                    <h3>The Invention of Chainmail</h3>
+                    <p>The greatest contribution of the Celts to military history was the invention of <strong>Chainmail (Maille)</strong> around the 3rd century BC. Celtic blacksmiths painstakingly drew iron wire, cut it into thousands of tiny rings, and riveted them together in a complex 4-in-1 pattern. This created a metallic fabric that was incredibly flexible and highly resistant to slashing from swords. The Romans were so impressed by Celtic chainmail that they immediately copied it, creating the <em>Lorica Hamata</em>, which remained the standard Roman armor for centuries.</p>
+                    
+                    <h2>2. The Roar of Battle: The Carnyx</h2>
+                    <p><strong>The Carnyx:</strong> Celtic psychological warfare began before the lines clashed. They utilized the <strong>Carnyx</strong>, a massive bronze war trumpet standing vertically, often topped with the stylized head of a snarling boar or dragon with an articulated wooden tongue. When blown, it emitted a harsh, terrifying, booming roar. Combined with warriors crashing their swords against their tall oak shields, it created a wall of chaotic noise designed to shatter enemy morale.</p>
+                    
+                    <h2>3. Beasts of War & Fortifications</h2>
+                    <p><strong>Celtic Chariot Ponies:</strong> While chariots died out in the Mediterranean, the Celts (especially in Britain) perfected their use. Celtic chariots were light, incredibly fast, and pulled by rugged native ponies. They featured a suspension system using woven leather straps to absorb the shock of rough terrain. Warriors would ride into battle on the chariot, hurl their javelins (lancea), and then acrobatically run out onto the wooden yoke between the galloping horses to strike the enemy before leaping down to fight on foot, using the chariot as a mobile retreat platform.</p>
+                    <p><strong>War Hounds (Irish Wolfhounds):</strong> The Celts, particularly the Gaels, bred massive dogs for war, the ancestors of the modern Irish Wolfhound. These giant, shaggy hounds were brought to the battlefield specifically to drag enemy cavalrymen down from their horses and to hunt down fleeing skirmishers.</p>
+                    <p><strong>Fortifications (Oppida):</strong> The Gauls defended their lands using massive hillforts known as <em>Oppida</em>. Their walls utilized a unique construction called the <em>Murus Gallicus</em> (Gallic Wall). It consisted of a timber framework filled with rubble and faced with stone. The internal timber framework gave the wall a slight flex, allowing it to absorb the impact of Roman battering rams without shattering like solid masonry would.</p>
                 `
             }
         ];
@@ -415,7 +845,23 @@
             }, 300);
         }
 
-        // Initialize App on load
+        let lastScrollY = window.scrollY;
+        const mainHeader = document.getElementById('main-header');
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            // If scrolling down and we have scrolled past the initial header area
+            if (currentScrollY > lastScrollY && currentScrollY > 150) {
+                mainHeader.classList.add('-translate-y-full');
+            } else {
+                // If scrolling up
+                mainHeader.classList.remove('-translate-y-full');
+            }
+            
+            lastScrollY = currentScrollY;
+        }, { passive: true });
+
         document.addEventListener('DOMContentLoaded', () => {
             filterCategory('all');
         });
